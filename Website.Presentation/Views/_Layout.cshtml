@@ -6,12 +6,24 @@
 
 <html>
 <head>
+    <script src="~/Scripts/jquery-3.0.0.js"></script>
+    <script src="~/Scripts/Plotly/plotly.min.js"></script>
+    
+
     <meta name="viewport" content="width=device-width" />
     <title></title>
 </head>
 <body>
-    <div>
+<div>
     @RenderBody()
-    </div>
+</div>
 </body>
+<script>
+    $(document).ready(function () {
+        // do your magic here
+        console.log( "ready!" );
+    });
+</script>
+
+
 </html>
