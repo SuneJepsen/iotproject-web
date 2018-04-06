@@ -101,6 +101,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <Project>{c1f652c1-4482-48b1-bfbd-b5edfdad3160}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WebApi.Access\WebApi.Access.csproj">
       <Project>{D86093CF-B298-4588-89C0-C2D7835A6D30}</Project>
       <Name>WebApi.Access</Name>

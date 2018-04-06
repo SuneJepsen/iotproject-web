@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
+using DataLayer.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WebApi.Access;
 using WebApi.Access.Controllers;
@@ -20,7 +21,7 @@ namespace WebApi.Access.Tests.Controllers
             ValuesController controller = new ValuesController();
 
             // Act
-            IEnumerable<string> result = controller.Get();
+            IEnumerable<Measurement> result = controller.Get();
 
             // Assert
             Assert.IsNotNull(result);
@@ -42,40 +43,7 @@ namespace WebApi.Access.Tests.Controllers
             Assert.AreEqual("value", result);
         }
 
-        [TestMethod]
-        public void Post()
-        {
-            // Arrange
-            ValuesController controller = new ValuesController();
-
-            // Act
-            controller.Post("value");
-
-            // Assert
-        }
-
-        [TestMethod]
-        public void Put()
-        {
-            // Arrange
-            ValuesController controller = new ValuesController();
-
-            // Act
-            controller.Put(5, "value");
-
-            // Assert
-        }
-
-        [TestMethod]
-        public void Delete()
-        {
-            // Arrange
-            ValuesController controller = new ValuesController();
-
-            // Act
-            controller.Delete(5);
-
-            // Assert
-        }
+       
+       
     }
 }
