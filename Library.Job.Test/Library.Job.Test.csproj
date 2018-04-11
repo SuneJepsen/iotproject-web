@@ -48,6 +48,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UnitTestInference.cs" />
     <Compile Include="UnitTestMasterTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -55,6 +56,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <Project>{C1F652C1-4482-48B1-BFBD-B5EDFDAD3160}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Library.Job\Library.Job.csproj">
       <Project>{07a77311-bfb9-4abc-9ea4-79e9be9c59ce}</Project>
       <Name>Library.Job</Name>
