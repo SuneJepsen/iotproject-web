@@ -18,8 +18,8 @@ namespace Library.Job.Test
             List<Measurement> floorData = new List<Measurement>();
             List<Measurement> doorData = new List<Measurement>();
 
-            doorData.Add(new Measurement { StartDate = DateTime.Now.AddHours(-1), EndDate = DateTime.Now });
-            floorData.Add(new Measurement { StartDate = DateTime.Now.AddMinutes(-30), EndDate = DateTime.Now.AddMinutes(-15) });
+            doorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-5), EndDate = DateTime.Now });
+            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-3), EndDate = DateTime.Now.AddSeconds(-1) });
 
             ITask job = new DoInferenceBetweenDoorAndFloorData(floorData, doorData);
             job.Work();
@@ -38,12 +38,12 @@ namespace Library.Job.Test
             List<Measurement> floorData = new List<Measurement>();
             List<Measurement> doorData = new List<Measurement>();
 
-            doorData.Add(new Measurement { StartDate = DateTime.Now.AddHours(-2), EndDate = DateTime.Now.AddMinutes(-90) });
-            floorData.Add(new Measurement { StartDate = DateTime.Now.AddMinutes(-110), EndDate = DateTime.Now.AddMinutes(-100) });
+            doorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-10), EndDate = DateTime.Now.AddSeconds(-7) });
+            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-9), EndDate = DateTime.Now.AddSeconds(-8) });
 
-            doorData.Add(new Measurement { StartDate = DateTime.Now.AddHours(-1), EndDate = DateTime.Now });
-            floorData.Add(new Measurement { StartDate = DateTime.Now.AddMinutes(-45), EndDate = DateTime.Now.AddMinutes(-30) });
-            floorData.Add(new Measurement { StartDate = DateTime.Now.AddMinutes(-20), EndDate = DateTime.Now.AddMinutes(-10) });
+            doorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-5), EndDate = DateTime.Now });
+            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-4), EndDate = DateTime.Now.AddSeconds(-3) });
+            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-2), EndDate = DateTime.Now.AddSeconds(-1) });
 
             ITask job = new DoInferenceBetweenDoorAndFloorData(floorData, doorData);
             job.Work();
@@ -63,9 +63,9 @@ namespace Library.Job.Test
             List<Measurement> floorData = new List<Measurement>();
             List<Measurement> doorData = new List<Measurement>();
 
-            doorData.Add(new Measurement { StartDate = DateTime.Now.AddHours(-2), EndDate = DateTime.Now.AddHours(-1) });
-            floorData.Add(new Measurement { StartDate = DateTime.Now.AddHours(-3), EndDate = DateTime.Now.AddMinutes(-150) });
-            floorData.Add(new Measurement { StartDate = DateTime.Now.AddMinutes(-30), EndDate = DateTime.Now.AddMinutes(-15) });
+            doorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-10), EndDate = DateTime.Now.AddSeconds(-7) });
+            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-2), EndDate = DateTime.Now.AddSeconds(-1) });
+            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-18), EndDate = DateTime.Now.AddSeconds(-15) });
 
             ITask job = new DoInferenceBetweenDoorAndFloorData(floorData, doorData);
             job.Work();
@@ -84,9 +84,15 @@ namespace Library.Job.Test
             List<Measurement> floorData = new List<Measurement>();
             List<Measurement> doorData = new List<Measurement>();
 
-            doorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-5), EndDate = DateTime.Now });
-            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-7), EndDate = DateTime.Now.AddSeconds(-4) });
-            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-1), EndDate = DateTime.Now.AddSeconds(2) });
+            doorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-30), EndDate = DateTime.Now.AddSeconds(-25) });
+            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-33), EndDate = DateTime.Now.AddSeconds(-31) });
+
+            doorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-20), EndDate = DateTime.Now.AddSeconds(-15) });
+            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-18), EndDate = DateTime.Now.AddSeconds(-16) });
+
+            doorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-10), EndDate = DateTime.Now });
+            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-12), EndDate = DateTime.Now.AddSeconds(-8) });
+            floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-6), EndDate = DateTime.Now.AddSeconds(-4) });
 
             ITask job = new DoInferenceBetweenDoorAndFloorData(floorData, doorData);
             job.Work();
@@ -95,8 +101,10 @@ namespace Library.Job.Test
 
             var inferenceList = job.Done();
 
-            Assert.AreEqual(1, inferenceList.Count);
-            Assert.AreEqual(2, inferenceList[0].Count);
+            Assert.AreEqual(3, inferenceList.Count);
+            Assert.AreEqual(-1, inferenceList[0].Count);
+            Assert.AreEqual(1, inferenceList[1].Count);
+            Assert.AreEqual(-2, inferenceList[2].Count);
         }
     }
 }

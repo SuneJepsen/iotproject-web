@@ -23,22 +23,31 @@ namespace Library.Job.Task.Concrete
         }
         public void Work()
         {
-            // Inference on detecting the number of floor data in between each door opening/closing
-            // TODO: 
-            //    Implement ingoing and outgoing recognition
-            //    Decide a smart way to return count (extra field en measurement?)
             var doorStart = DateTime.Now;
             var doorEnd = DateTime.Now;
             var floorIndex = 0;
+            var incDec = 1;
             foreach (var m in _doorMeasurements)
             {
                 doorStart = m.StartDate.AddSeconds(-buffer);
                 doorEnd = m.EndDate.AddSeconds(buffer);
 
+                if (_floorMeasurements[floorIndex].StartDate > m.StartDate)
+                {
+                    incDec = 1;
+                }
+                else
+                {
+                    incDec = -1;
+                }
+
                 var count = 0;
                 while (floorIndex < _floorMeasurements.Count && _floorMeasurements[floorIndex].EndDate <= doorEnd)
                 {
-                    if (_floorMeasurements[floorIndex].StartDate >= doorStart) count++;
+                    if (_floorMeasurements[floorIndex].StartDate >= doorStart)
+                    {
+                        count += incDec;
+                    }
 
                     floorIndex++;
                 }
