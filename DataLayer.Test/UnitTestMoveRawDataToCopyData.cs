@@ -12,10 +12,10 @@ namespace DataLayer.Test
         [TestMethod]
         public void Test_Move_RawData_To_CopyData()
         {
-            var rawDataFloorRepo = new FirebaseDb(FirebaseConnectionString.RawDataFloor);
-            var rawDataDoorRepo = new FirebaseDb(FirebaseConnectionString.RawDataDoor);
-            var copyDataFloorRepo = new FirebaseDb(FirebaseConnectionString.CopyDataFloor);
-            var copyDataDoorRepo = new FirebaseDb(FirebaseConnectionString.CopyDataDoor);
+            var rawDataFloorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.RawDataFloor,DateTime.Now.ToString("dd-MM-yyyy")));
+            var rawDataDoorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.RawDataDoor, DateTime.Now.ToString("dd-MM-yyyy")));
+            var copyDataFloorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.CopyDataFloor, DateTime.Now.ToString("dd-MM-yyyy")));
+            var copyDataDoorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.CopyDataDoor, DateTime.Now.ToString("dd-MM-yyyy")));
 
             var measurements1 = rawDataFloorRepo.GetAll();
             copyDataFloorRepo.Save(measurements1);

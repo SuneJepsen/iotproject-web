@@ -11,11 +11,11 @@ namespace DataLayer.Test
         [TestMethod]
         public void Test_Clear_all_databases()
         {
-            var rawDataFloorRepo = new FirebaseDb(FirebaseConnectionString.RawDataFloor);
-            var rawDataDoorRepo = new FirebaseDb(FirebaseConnectionString.RawDataDoor);
-            var copyDataFloorRepo = new FirebaseDb(FirebaseConnectionString.CopyDataFloor);
-            var copyDataDoorRepo = new FirebaseDb(FirebaseConnectionString.CopyDataDoor);
-            var inferredDataRepo = new FirebaseDb(FirebaseConnectionString.InferredData);
+            var rawDataFloorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.RawDataFloor,string.Empty));
+            var rawDataDoorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.RawDataDoor, string.Empty));
+            var copyDataFloorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.CopyDataFloor, string.Empty));
+            var copyDataDoorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.CopyDataDoor, string.Empty));
+            var inferredDataRepo = new FirebaseDb(string.Format(FirebaseConnectionString.InferredData, string.Empty));
             rawDataFloorRepo.DeleteAll();
             rawDataDoorRepo.DeleteAll();
             copyDataDoorRepo.DeleteAll();

@@ -16,7 +16,7 @@ namespace DataLayer.Test
 
         public UnitTestFirebaseRawDataFloor()
         {
-            this._repo = new FirebaseDb(FirebaseConnectionString.RawDataFloor);
+            this._repo = new FirebaseDb(string.Format(FirebaseConnectionString.RawDataFloor,DateTime.Now.ToString("dd-MM-yyyy")));
         }
 
         [TestMethod]
@@ -24,12 +24,15 @@ namespace DataLayer.Test
         {
             List<Measurement> measurements = new List<Measurement>();
             Measurement measurement = null;
-
+            var startDate = DateTime.Now;
+            var endDate = startDate;
             for (int i = 0; i < 10; i++)
             {
+                startDate = startDate.AddMinutes(2);
+                endDate = startDate.AddMinutes(2);
                 measurement = new Measurement();
-                measurement.StartDate = DateTime.Now;
-                measurement.EndDate = DateTime.Now.AddMinutes(2);
+                measurement.StartDate = startDate;
+                measurement.EndDate = endDate;
                 measurements.Add(measurement);
             }
 

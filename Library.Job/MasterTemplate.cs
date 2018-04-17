@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DataLayer.Domain;
 using DataLayer.Repository;
 using DataLayer.Repository.Concrete;
@@ -18,11 +19,11 @@ namespace Library.Job
 
         protected MasterTemplate()
         {
-            this.rawDataFloorRepo = new FirebaseDb(FirebaseConnectionString.RawDataFloor);
-            this.rawDataDoorRepo = new FirebaseDb(FirebaseConnectionString.RawDataDoor);
-            this.copyDataFloorRepo = new FirebaseDb(FirebaseConnectionString.CopyDataFloor);
-            this.copyDataDoorRepo = new FirebaseDb(FirebaseConnectionString.CopyDataDoor);
-            this.inferredDataRepo = new FirebaseDb(FirebaseConnectionString.InferredData);
+            this.rawDataFloorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.RawDataFloor, DateTime.Now.ToString("dd-MM-yyyy")));
+            this.rawDataDoorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.RawDataDoor, DateTime.Now.ToString("dd-MM-yyyy")));
+            this.copyDataFloorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.CopyDataFloor, DateTime.Now.ToString("dd-MM-yyyy")));
+            this.copyDataDoorRepo = new FirebaseDb(string.Format(FirebaseConnectionString.CopyDataDoor, DateTime.Now.ToString("dd-MM-yyyy")));
+            this.inferredDataRepo = new FirebaseDb(string.Format(FirebaseConnectionString.InferredData, DateTime.Now.ToString("dd-MM-yyyy")));
             inferredMeasurements = new List<Measurement>();
         }
 

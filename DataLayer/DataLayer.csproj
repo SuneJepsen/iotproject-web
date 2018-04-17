@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crypto\CryptoConstants.cs" />
+    <Compile Include="Crypto\ICryptography.cs" />
+    <Compile Include="Crypto\RijndaelManaged.cs" />
     <Compile Include="Domain\Measurement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Abstract\IRepository.cs" />

@@ -17,7 +17,7 @@ namespace DataLayer.Test
 
         public UnitTestFirebaseRawDataDoor()
         {
-            this._repo = new FirebaseDb(FirebaseConnectionString.RawDataDoor);
+            this._repo = new FirebaseDb(string.Format(FirebaseConnectionString.RawDataDoor,DateTime.Now.ToString("dd-MM-yyyy")));
         }
         [TestMethod]
         public void Test_Insert_Into_Raw_data_door()
@@ -25,12 +25,15 @@ namespace DataLayer.Test
 
             List<Measurement> measurements = new List<Measurement>();
             Measurement measurement = null;
-
+            var startDate = DateTime.Now;
+            var endDate = startDate;
             for (int i = 0; i < 10; i++)
             {
+                startDate = startDate.AddMinutes(2);
+                endDate = startDate.AddMinutes(2);
                 measurement = new Measurement();
-                measurement.StartDate = DateTime.Now;
-                measurement.EndDate = DateTime.Now.AddMinutes(2);
+                measurement.StartDate = startDate;
+                measurement.EndDate = endDate;
                 measurements.Add(measurement);
             }
 
@@ -69,6 +72,13 @@ namespace DataLayer.Test
                     var startDate = measurement.StartDate;
                 }
             }
+        }
+
+
+        [TestMethod]
+        public void Test_Datetime()
+        {
+            var date = DateTime.Now.ToString("dd-MM-yyyy");
         }
     }
 }

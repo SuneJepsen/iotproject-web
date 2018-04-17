@@ -25,10 +25,11 @@ namespace Library.Job.Task.Concrete
         {
             var doorStart = DateTime.Now;
             var doorEnd = DateTime.Now;
-            var floorIndex = 0;
+            
             var incDec = 1;
             foreach (var m in _doorMeasurements)
             {
+                var floorIndex = 0;
                 doorStart = m.StartDate.AddSeconds(-buffer);
                 doorEnd = m.EndDate.AddSeconds(buffer);
 
@@ -51,7 +52,7 @@ namespace Library.Job.Task.Concrete
 
                     floorIndex++;
                 }
-                _inferredMeasurements.Add(new Measurement { StartDate = m.StartDate, EndDate = m.EndDate, Count = count });
+                _inferredMeasurements.Add(new Measurement { StartDate = m.StartDate, EndDate = m.EndDate, Count = count.ToString() });
             }
             
         }
