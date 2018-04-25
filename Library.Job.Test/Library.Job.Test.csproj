@@ -48,7 +48,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitTestInference.cs" />
+    <Compile Include="UnitTestInferenceLogicExperimented.cs" />
+    <Compile Include="UnitTestInferenceLogicNaive.cs" />
     <Compile Include="UnitTestMasterTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

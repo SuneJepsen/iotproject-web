@@ -8,14 +8,14 @@ using Library.Job.Task.Abstract;
 
 namespace Library.Job.Task.Concrete
 {
-    public class DoInferenceBetweenDoorAndFloorData: ITask
+    public class InferenceLogicNaive: ITask
     {
         private List<Measurement> _floorMeasurements;
         private List<Measurement> _doorMeasurements;
         private List<Measurement> _inferredMeasurements;
         private const int buffer = 3;
 
-        public DoInferenceBetweenDoorAndFloorData(List<Measurement> floorMeasurements, List<Measurement> doorMeasurements)
+        public InferenceLogicNaive(List<Measurement> floorMeasurements, List<Measurement> doorMeasurements)
         {
             _floorMeasurements = floorMeasurements;
             _doorMeasurements = doorMeasurements;
@@ -25,11 +25,14 @@ namespace Library.Job.Task.Concrete
         {
             var doorStart = DateTime.Now;
             var doorEnd = DateTime.Now;
-            
+            var floorIndex = 0;
             var incDec = 1;
             foreach (var m in _doorMeasurements)
             {
-                var floorIndex = 0;
+                if (floorIndex >= _floorMeasurements.Count)
+                {
+                    return;
+                }
                 doorStart = m.StartDate.AddSeconds(-buffer);
                 doorEnd = m.EndDate.AddSeconds(buffer);
 

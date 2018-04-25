@@ -9,7 +9,7 @@ using System.Threading;
 namespace Library.Job.Test
 {
     [TestClass]
-    public class UnitTestInference
+    public class UnitTestInferenceLogicNaive
     {
 
         [TestMethod]
@@ -21,7 +21,7 @@ namespace Library.Job.Test
             doorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-5), EndDate = DateTime.Now });
             floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-3), EndDate = DateTime.Now.AddSeconds(-1) });
 
-            ITask job = new DoInferenceBetweenDoorAndFloorData(floorData, doorData);
+            ITask job = new InferenceLogicNaive(floorData, doorData);
             job.Work();
 
             Thread.Sleep(100);
@@ -45,7 +45,7 @@ namespace Library.Job.Test
             floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-4), EndDate = DateTime.Now.AddSeconds(-3) });
             floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-2), EndDate = DateTime.Now.AddSeconds(-1) });
 
-            ITask job = new DoInferenceBetweenDoorAndFloorData(floorData, doorData);
+            ITask job = new InferenceLogicNaive(floorData, doorData);
             job.Work();
 
             Thread.Sleep(100);
@@ -67,7 +67,7 @@ namespace Library.Job.Test
             floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-2), EndDate = DateTime.Now.AddSeconds(-1) });
             floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-18), EndDate = DateTime.Now.AddSeconds(-15) });
 
-            ITask job = new DoInferenceBetweenDoorAndFloorData(floorData, doorData);
+            ITask job = new InferenceLogicNaive(floorData, doorData);
             job.Work();
 
             Thread.Sleep(100);
@@ -94,7 +94,7 @@ namespace Library.Job.Test
             floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-12), EndDate = DateTime.Now.AddSeconds(-8) });
             floorData.Add(new Measurement { StartDate = DateTime.Now.AddSeconds(-6), EndDate = DateTime.Now.AddSeconds(-4) });
 
-            ITask job = new DoInferenceBetweenDoorAndFloorData(floorData, doorData);
+            ITask job = new InferenceLogicNaive(floorData, doorData);
             job.Work();
 
             Thread.Sleep(100);
