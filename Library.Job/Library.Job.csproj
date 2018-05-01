@@ -45,7 +45,8 @@
     <Compile Include="Scheduler.cs" />
     <Compile Include="Task\Abstract\ITask.cs" />
     <Compile Include="Task\Concrete\CryptoSensitiveData.cs" />
-    <Compile Include="Task\Concrete\DoInferenceBetweenDoorAndFloorData.cs" />
+    <Compile Include="Task\Concrete\InferenceLogicExperimented.cs" />
+    <Compile Include="Task\Concrete\InferenceLogicNaive.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataLayer\DataLayer.csproj">

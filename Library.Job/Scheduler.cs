@@ -13,7 +13,7 @@ namespace Library.Job
     {
         public override void ModelData()
         {
-            ITask doInferenceBetweenDoorAndFloorData = new DoInferenceBetweenDoorAndFloorData(floorMeasurements, doorMeasurements);
+            ITask doInferenceBetweenDoorAndFloorData = new InferenceLogicNaive(floorMeasurements, doorMeasurements);
             doInferenceBetweenDoorAndFloorData.Work();
             inferredMeasurements = doInferenceBetweenDoorAndFloorData.Done();
             
