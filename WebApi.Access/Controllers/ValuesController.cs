@@ -16,11 +16,11 @@ namespace WebApi.Access.Controllers
 {
     public class ValuesController : ApiController
     {
-        private IRepository _repo;
+        private IRepository<Measurement> _repo;
 
         public ValuesController()
         {
-            _repo = new FirebaseDb(FirebaseConnectionString.InferredData);
+            _repo = new FirebaseDb<Measurement>(FirebaseConnectionString.InferredData);
         }
 
         // GET api/values

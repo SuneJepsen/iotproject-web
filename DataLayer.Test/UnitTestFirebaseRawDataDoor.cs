@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DataLayer.Domain;
+using DataLayer.Helper.DateHelper;
 using DataLayer.Repository;
 using DataLayer.Repository.Abstract;
 using DataLayer.Repository.Concrete;
@@ -13,36 +14,42 @@ namespace DataLayer.Test
     [TestClass]
     public class UnitTestFirebaseRawDataDoor
     {
-        private IRepository _repo;
+        private IRepository<MeasurementRaw> _repo;
 
         public UnitTestFirebaseRawDataDoor()
         {
-            this._repo = new FirebaseDb(string.Format(FirebaseConnectionString.RawDataDoor,DateTime.Now.ToString("dd-MM-yyyy")));
+            this._repo = new FirebaseDb<MeasurementRaw>(string.Format(FirebaseConnectionString.RawDataDoor,string.Empty));
         }
         [TestMethod]
         public void Test_Insert_Into_Raw_data_door()
         {
 
-            List<Measurement> measurements = new List<Measurement>();
-            Measurement measurement = null;
-            var startDate = DateTime.Now;
-            var endDate = startDate;
-            for (int i = 0; i < 10; i++)
+            List<MeasurementRaw> measurements = new List<MeasurementRaw>();
+            MeasurementRaw measurement = null;
+       
+            for (int i = 0; i < 2; i++)
             {
-                startDate = startDate.AddMinutes(2);
-                endDate = startDate.AddMinutes(2);
-                measurement = new Measurement();
-                measurement.StartDate = startDate;
-                measurement.EndDate = endDate;
+                var startDate = DateTime.Now;
+                var endDate = startDate;
+                Random r1 = new Random();
+                Random r2 = new Random();
+                int rInt1 = r1.Next(3, 6); //for int
+                int rInt2 = r2.Next(2, 4);
+                startDate = startDate.AddSeconds(rInt1);
+                endDate = startDate.AddSeconds(rInt2);
+                measurement = new MeasurementRaw();
+                measurement.StartDate = startDate.Second;
+                measurement.EndDate = endDate.Second;
+                measurement.Time = new DateHelper().ConvertToEpoch(startDate);
                 measurements.Add(measurement);
             }
 
-            _repo.Save(measurements);
+           _repo.Save(measurements);
         }
         [TestMethod]
         public void Test_Delete_all_Raw_data_door()
         {
-            _repo.DeleteAll();
+           // _repo.DeleteAll();
         }
 
         [TestMethod]

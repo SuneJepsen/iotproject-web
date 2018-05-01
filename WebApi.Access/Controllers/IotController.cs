@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using DataLayer.Crypto;
 using DataLayer.Domain;
-using DataLayer.Repository;
-using DataLayer.Repository.Abstract;
-using DataLayer.Repository.Concrete;
+using DataLayer.Facade;
 using WebApi.Access.ServiceLayer;
 
 namespace WebApi.Access.Controllers
 {
+
+    // https://webapiaccess20180420013135.azurewebsites.net/api/iot
     public class IotController : ApiController
     {
         private InferredDataService _inferredDataService;
         public IotController()
         {
-            _inferredDataService = new InferredDataService(new FirebaseDb(string.Format(FirebaseConnectionString.InferredData, DateTime.Now.ToString("dd-MM-yyyy"))),new RijndaelManaged());
+            _inferredDataService = new InferredDataService(new FacadeData(DateTime.Now, DateTime.Now));
         }
         // GET api/<controller>
         public IEnumerable<Measurement> Get()

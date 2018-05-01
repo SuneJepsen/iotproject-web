@@ -11,7 +11,11 @@ namespace DataLayer.Domain
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        public int Id { get; set; }
+        public DateTime EpocToDatetime { get; set; }
+
+        public long Epoc { get; set; }
+
+        public string Id { get; set; }
         public string Count { get; set; }
     }
 }

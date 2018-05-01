@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 
 namespace DataLayer.Repository.Concrete
 {
-    public class FirebaseDb: IRepository
+    public class FirebaseDb<T>: IRepository<T>
     {
         private string _path;
 
@@ -18,9 +18,9 @@ namespace DataLayer.Repository.Concrete
         {
             this._path = path;
         }
-        public List<Measurement> GetAll()
+        public List<T> GetAll()
         {
-            var measurements = new List<Measurement>();
+            var measurements = new List<T>();
             var request = (HttpWebRequest)WebRequest.Create(_path);
             request.ContentType = "application/json: charset=utf-8";
             var reponse = request.GetResponse() as HttpWebResponse;
@@ -34,9 +34,10 @@ namespace DataLayer.Repository.Concrete
                     if (!string.IsNullOrEmpty(json) && json!= "null")
                     {
                         var data = JsonConvert.DeserializeObject<dynamic>(json);
+                        //var firebaseLookup = JsonConvert.DeserializeObject<Dictionary<string, T>>(json);
                         foreach (var itemDynamic in data)
                         {
-                            measurements.Add(JsonConvert.DeserializeObject<Measurement>(((JProperty)itemDynamic).Value.ToString()));
+                            measurements.Add(JsonConvert.DeserializeObject<T>(((JProperty)itemDynamic).Value.ToString()));
                         }
                     }
                 }
@@ -44,7 +45,7 @@ namespace DataLayer.Repository.Concrete
             return measurements;
         }
 
-        public void Save(List<Measurement> measurements)
+        public void Save(List<T> measurements)
         {
             foreach (var measurement in measurements)
             {

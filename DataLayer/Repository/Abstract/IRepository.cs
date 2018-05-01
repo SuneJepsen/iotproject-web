@@ -7,10 +7,10 @@ using DataLayer.Domain;
 
 namespace DataLayer.Repository.Abstract
 {
-    public interface IRepository
+    public interface IRepository<T>
     {
-        List<Measurement> GetAll();
-        void Save(List<Measurement>measurements);
+        List<T> GetAll();
+        void Save(List<T>measurements);
 
         void DeleteAll();
     }

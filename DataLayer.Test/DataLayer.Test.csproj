@@ -52,6 +52,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UnitTestFacade.cs" />
+    <Compile Include="UnitTestDateHelper.cs" />
     <Compile Include="UnitTestClearAllDatabases.cs" />
     <Compile Include="UnitTestMoveRawDataToCopyData.cs" />
     <Compile Include="UnitTestFirebaseRawDataFloor.cs" />

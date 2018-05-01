@@ -1,39 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using DataLayer.Crypto;
+﻿using System.Collections.Generic;
 using DataLayer.Domain;
-using DataLayer.Repository.Abstract;
+using DataLayer.Facade;
 
 namespace WebApi.Access.ServiceLayer
 {
     public class InferredDataService
     {
-        private ICryptography _cryptographyTool;
-        private IRepository _repository;
-
-        public InferredDataService(IRepository repository, ICryptography cryptographyTool)
+        private IFacade _facade;
+        public InferredDataService(IFacade facade)
         {
-            _repository = repository;
-            _cryptographyTool = cryptographyTool;
+            _facade = facade;
         }
-
         public List<Measurement> GetDataForCurrentDay()
         {
-            var encryptedMeasurements = _repository.GetAll();
-            var decryptedMeasurements = new List<Measurement>();
-            Measurement decryptedMeasurement = null;
-            foreach (var encryptedMeasurement in encryptedMeasurements)
-            {
-                decryptedMeasurement = new Measurement();
-                decryptedMeasurement.Id = encryptedMeasurement.Id;
-                decryptedMeasurement.StartDate = encryptedMeasurement.StartDate;
-                decryptedMeasurement.EndDate = encryptedMeasurement.EndDate;
-                decryptedMeasurement.Count = _cryptographyTool.Decrypt(encryptedMeasurement.Count, CryptoConstants.passPhrase);
-                decryptedMeasurements.Add(decryptedMeasurement);
-            }
-            return decryptedMeasurements;
+            return _facade.GetAllInferredData(); ;
         }
 
 
