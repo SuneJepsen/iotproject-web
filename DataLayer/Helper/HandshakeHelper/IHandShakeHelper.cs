@@ -9,10 +9,8 @@ namespace DataLayer.Helper.HandshakeHelper
 {
     public interface IHandShakeHelper
     {
-        DateTime GetHandShakeFloor();
-        DateTime GetHandShakeDoor();
-
-        void SaveHandShakeFloor(Handshake handshake);
-        void SaveHandShakeDoor(Handshake handshake);
+        DateTime? GetHandShakeFloor();
+        DateTime? GetHandShakeDoor();
+        void SaveHandshake(Handshake handshake);
     }
 }

@@ -14,7 +14,7 @@ namespace DataLayer.Test
         [TestMethod]
         public void Test_Move_RawData_To_CopyData()
         {
-            IFacade facade = new FacadeData(DateTime.Now, DateTime.Now);
+            IFacade facade = new FacadeData();
             var floorMeasurements = facade.GetAllRawDataFloorAsMeasurement();
             facade.SaveCopyFloorMeasurements(floorMeasurements);
             //rawDataFloorRepo.DeleteAll();

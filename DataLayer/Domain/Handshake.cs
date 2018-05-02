@@ -8,6 +8,9 @@ namespace DataLayer.Domain
 {
     public class Handshake
     {
-        public DateTime Date { get; set; }
+        public long? Accelometer { get; set; }
+        public long? Promixitmity { get; set; }
+
+        public DateTime? CreatedDate{ get; set; }
     }
 }

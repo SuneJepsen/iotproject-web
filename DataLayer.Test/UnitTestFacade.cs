@@ -10,7 +10,7 @@ namespace DataLayer.Test
         [TestMethod]
         public void TestMethod1()
         {
-            IFacade facade = new FacadeData(DateTime.Now, DateTime.Now);
+            IFacade facade = new FacadeData();
 
             var doorMeasurements = facade.GetAllRawDataDoorAsMeasurement();
             var floorMeasurements = facade.GetAllRawDataFloorAsMeasurement();

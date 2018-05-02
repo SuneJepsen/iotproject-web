@@ -16,7 +16,7 @@ namespace Library.Job
 
         protected MasterTemplate()
         {
-            facade = new FacadeData(DateTime.Now, DateTime.Now);
+            facade = new FacadeData();
             inferredMeasurements = new List<Measurement>();
         }
 

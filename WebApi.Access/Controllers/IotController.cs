@@ -14,7 +14,7 @@ namespace WebApi.Access.Controllers
         private InferredDataService _inferredDataService;
         public IotController()
         {
-            _inferredDataService = new InferredDataService(new FacadeData(DateTime.Now, DateTime.Now));
+            _inferredDataService = new InferredDataService(new FacadeData());
         }
         // GET api/<controller>
         public IEnumerable<Measurement> Get()
