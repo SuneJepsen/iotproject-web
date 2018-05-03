@@ -6,14 +6,38 @@
 
 <h2>Index</h2>
 
-<div id="myDiv"></div>
 
 <script>
     $(document).ready(function () {
         // do your magic here
         console.log("ready!");
 
-        var inferredData = [{ StartDate: "25-04-2018 10:00:00", Count: 2 }, { StartDate: "25-04-2018 10:00:30", Count: -1 }, { StartDate: "25-04-2018 10:01:00", Count: 5 }];
+        var inferredData = [
+            { StartDate: 1525373817000, Count: 2 },
+            { StartDate: 1525373818000, Count: -1 },
+            { StartDate: 1525373819000, Count: 5 },
+            { StartDate: 1525373820000, Count: 2 },
+            { StartDate: 1525373821000, Count: -3 },
+            { StartDate: 1525373822000, Count: 2 },
+            { StartDate: 1525373823000, Count: -1 },
+            { StartDate: 1525373824000, Count: -1 },
+            { StartDate: 1525373825000, Count: 5 },
+            { StartDate: 1525373826000, Count: 4 },
+            { StartDate: 1525373827000, Count: 2 },
+            { StartDate: 1525373828000, Count: -2 }
+        ];
+
+        var updatedinferred = [
+            { StartDate: 1525373829000, Count: 1 },
+            { StartDate: 1525373830000, Count: -4 },
+            { StartDate: 1525373831000, Count: -2 }, 
+            { StartDate: 1525373832000, Count: 3 }
+        ];
+
+        var updatedinferred2 = [
+            { StartDate: 1525373833000, Count: 5 },
+            { StartDate: 1525373834000, Count: 4 }
+        ];
 
         //$.ajax({
         //    url: "http://webapiaccess20180420013135.azurewebsites.net/api/values", success: function (result) {
@@ -22,68 +46,59 @@
         //    }
         //});
 
+        var createGraph = function (divName, init_time) {
+            var div = document.createElement("div");
+            div.setAttribute("id", divName);
+            document.body.appendChild(div);
+
+            var layout = {
+                xaxis: {
+                    type: 'date',
+                    range: [init_time, init_time],
+                    rangeslider: { range: [init_time, init_time] },
+                }
+            };
+            var data = [
+                {
+                    x: [init_time],
+                    y: [0],
+                    mode: 'lines',
+                    line: { color: '#80CAF6' }
+                }
+            ];
+            Plotly.plot(divName, data, layout);
+        }
+
         var count = 0;
-        var data = [
-            {
-                x: inferredData.map(x => x.StartDate),
-                y: inferredData.map(x => count += x.Count),
-                type: 'scatter'
+        var init_time = inferredData[0].StartDate;
+
+        var updateGraph = function (data, div, interval) {
+            var end_time = data[data.length - 1].StartDate;
+            var start_time = end_time - interval;
+            
+            var update = {
+                x: [data.map(x => x.StartDate)],
+                y: [data.map(x => count += x.Count)]
             }
-        ];
 
-        Plotly.newPlot('myDiv', data);
+            var minuteView = {
+                xaxis: {
+                    type: 'date',
+                    range: [start_time, end_time],
+                    rangeslider: { range: [init_time, end_time] },
+                }
+            };
 
-        //function rand() {
-        //    return Math.random();
-        //}
+            Plotly.relayout(div, minuteView);
+            Plotly.extendTraces(div, update, [0])
+        }
 
-        //var time = new Date();
+        createGraph('myDiv', init_time);
+        createGraph('myDiv2', init_time);
 
-        //var data = [{
-        //    x: [time],
-        //    y: [rand],
-        //    mode: 'lines',
-        //    line: { color: '#80CAF6' }
-        //}]
-
-        //var layout = {
-        //    xaxis: {
-        //        type: 'date',
-        //        range: [time,time],
-        //        rangeslider: { range: [time, time] },
-        //    }
-        //};
-
-        //Plotly.plot('myDiv', data, layout);
-
-        //var cnt = 0;
-        //var startingTime = time
-
-        //var interval = setInterval(function () {
-
-        //    var time = new Date();
-
-        //    var update = {
-        //        x: [[time]],
-        //        y: [[rand()]]
-        //    }
-
-        //    var olderTime = time.setMinutes(time.getMinutes() - 1);
-        //    var futureTime = time.setMinutes(time.getMinutes() + 1);
-
-        //    var minuteView = {
-        //        xaxis: {
-        //            type: 'date',
-        //            range: [olderTime, futureTime],
-        //            rangeslider: { range: [startingTime, futureTime] },
-        //        }
-        //    };
-
-        //    Plotly.relayout('myDiv', minuteView);
-        //    Plotly.extendTraces('myDiv', update, [0])
-
-        //    if (cnt === 100) clearInterval(interval);
-        //}, 1000);
+        setTimeout(function () { updateGraph(inferredData, 'myDiv', 10000); }, 1000);
+        setTimeout(function () { updateGraph(updatedinferred, 'myDiv2', 10000); }, 2000);
+        setTimeout(function () { updateGraph(updatedinferred2, 'myDiv', 10000); }, 3000);
 
     });
 </script>
