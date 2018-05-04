@@ -40,9 +40,9 @@ namespace Library.Job
         private void End()
         {
             facade.SaveCopyFloorMeasurements(floorMeasurements);
-            //facade.DeleteRawDataFloor();
+            facade.DeleteRawDataFloor();
             facade.SaveCopyDoorMeasurements(doorMeasurements);
-            //facade.DeleteRawDataDoor();
+            facade.DeleteRawDataDoor();
             facade.SaveInferredMeasurements(inferredMeasurements);
         }
  

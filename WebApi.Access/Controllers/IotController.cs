@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Web.Http;
 using DataLayer.Domain;
 using DataLayer.Facade;
+using Library.Job;
+using WebApi.Access.Domain;
 using WebApi.Access.ServiceLayer;
 
 namespace WebApi.Access.Controllers
@@ -14,12 +16,24 @@ namespace WebApi.Access.Controllers
         private InferredDataService _inferredDataService;
         public IotController()
         {
+  
             _inferredDataService = new InferredDataService(new FacadeData());
         }
-        // GET api/<controller>
-        public IEnumerable<Measurement> Get()
+        [HttpGet]
+        public DeviceData GetInferredData(Guid? guid)
         {
-            return _inferredDataService.GetDataForCurrentDay();
+            return _inferredDataService.GetInferredDataForCurrentDay(guid);
+        }
+        [HttpGet]
+        public IEnumerable<DeviceData> GetCopyData(Guid? doorGuid, Guid? floorGuid)
+        {
+            return _inferredDataService.GetCopyDataForCurrentDay(doorGuid, floorGuid);
+        }
+        [HttpGet]
+        public string Move()
+        {
+            new Scheduler().Run(); ;
+            return "move";
         }
     }
 }

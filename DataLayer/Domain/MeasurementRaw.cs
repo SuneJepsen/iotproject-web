@@ -8,10 +8,11 @@ namespace DataLayer.Domain
 {
     public class MeasurementRaw
     {
-        public int StartDate { get; set; }
-        public int EndDate { get; set; }
+        public int? StartDate { get; set; }
+        public int? EndDate { get; set; }
 
         public string Id { get; set; }
+        public string Title { get; set; }
         public long Time { get; set; }
     }
 }

@@ -17,5 +17,8 @@ namespace DataLayer.Facade
         void DeleteRawDataFloor();
         void DeleteRawDataDoor();
         List<Measurement> GetAllInferredData();
+        List<Measurement> GetAllCopyDataDoor();
+        List<Measurement> GetAllCopyDataFloor();
+
     }
 }

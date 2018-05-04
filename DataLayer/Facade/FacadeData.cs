@@ -35,23 +35,22 @@ namespace DataLayer.Facade
             _handShakeHelper = new HandShakeHelper();
             _handshakeFloor = _handShakeHelper.GetHandShakeFloor();
             _handshakeDoor = _handShakeHelper.GetHandShakeDoor();
-            if (!_handshakeDoor.HasValue || !_handshakeFloor.HasValue)
+        
+            var handshakeFloor = rawDataFloorRepo.GetAll().Where(x=>x.StartDate==0 && x.EndDate==0).FirstOrDefault();
+            var handshakeDoor= rawDataDoorRepo.GetAll().Where(x => x.StartDate == 0 && x.EndDate == 0).FirstOrDefault();
+            if (handshakeDoor != null && handshakeFloor != null)
             {
-                var handshakeFloor = rawDataFloorRepo.GetAll().Where(x=>x.StartDate==0 && x.EndDate==0).SingleOrDefault();
-                var handshakeDoor= rawDataDoorRepo.GetAll().Where(x => x.StartDate == 0 && x.EndDate == 0).SingleOrDefault();
-                if (handshakeDoor != null && handshakeFloor != null)
+                var handshake = new Handshake()
                 {
-                    var handshake = new Handshake()
-                    {
-                        Accelometer = handshakeDoor.Time,
-                        Promixitmity = handshakeFloor.Time,
-                        CreatedDate = DateTime.Now
-                    };
-                    _handShakeHelper.SaveHandshake(handshake);
-                    _handshakeFloor = _handShakeHelper.GetHandShakeFloor();
-                    _handshakeDoor = _handShakeHelper.GetHandShakeDoor();
-                }
+                    Accelometer = handshakeDoor.Time,
+                    Promixitmity = handshakeFloor.Time,
+                    CreatedDate = DateTime.Now
+                };
+                _handShakeHelper.SaveHandshake(handshake);
+                _handshakeFloor = _handShakeHelper.GetHandShakeFloor();
+                _handshakeDoor = _handShakeHelper.GetHandShakeDoor();
             }
+         
         }
         private List<Measurement> ConvertToMeasurement(List<MeasurementRaw> rawData, DateTime handShake)
         {
@@ -59,13 +58,17 @@ namespace DataLayer.Facade
             Measurement measurement = null;
             foreach (MeasurementRaw measurementRaw in rawData)
             {
-                measurement = new Measurement();
-                measurement.Id = measurementRaw.Id;
-                measurement.StartDate = _dateHelper.GetDateTime(measurementRaw.StartDate, handShake);
-                measurement.EndDate = _dateHelper.GetDateTime(measurementRaw.EndDate, handShake);
-                measurement.Epoc = measurementRaw.Time;
-                measurement.EpocToDatetime = _dateHelper.ConvertFromEpoch(measurementRaw.Time);
-                measurements.Add(measurement);
+                if (measurementRaw.StartDate != null && measurementRaw.EndDate!= null)
+                {
+                    measurement = new Measurement();
+                    measurement.Id = Guid.NewGuid();
+                    measurement.StartDate = _dateHelper.GetDateTime(measurementRaw.StartDate.Value, handShake);
+                    measurement.EndDate = _dateHelper.GetDateTime(measurementRaw.EndDate.Value, handShake);
+                    measurement.Epoc = measurementRaw.Time;
+                    measurement.EpocToDatetime = _dateHelper.ConvertFromEpoch(measurementRaw.Time);
+                    measurements.Add(measurement);
+                }
+
             }
             return measurements;
         }
@@ -107,20 +110,26 @@ namespace DataLayer.Facade
 
         public void DeleteRawDataFloor()
         {
-            throw new NotImplementedException();
+            rawDataFloorRepo.DeleteAll();
         }
 
         public void DeleteRawDataDoor()
         {
-            throw new NotImplementedException();
+            rawDataDoorRepo.DeleteAll();
         }
 
         public List<Measurement> GetAllInferredData()
         {
             return inferredDataRepo.GetAll();
         }
-
-
+        public List<Measurement> GetAllCopyDataDoor()
+        {
+            return copyDataDoorRepo.GetAll();
+        }
+        public List<Measurement> GetAllCopyDataFloor()
+        {
+            return copyDataFloorRepo.GetAll();
+        }
         //public List<Measurement> GetDataForCurrentDay()
         //{
         //    var encryptedMeasurements = _repository.GetAll();
