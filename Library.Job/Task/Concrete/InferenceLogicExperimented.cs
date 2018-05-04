@@ -34,27 +34,37 @@ namespace Library.Job.Task.Concrete
                 {
                     return;
                 }
-                doorStart = m.StartDate;
-                doorEnd = m.EndDate;
-                if (_floorMeasurements[floorIndex].StartDate >= doorStart.AddSeconds(in_buffer))
+                if (m.StartDate != null && m.EndDate != null)
                 {
-                    incDec = 1;
-                } else
-                {
-                    incDec = -1;
-                }
-
-                var count = 0;
-                while (floorIndex < _floorMeasurements.Count && _floorMeasurements[floorIndex].EndDate <= doorEnd)
-                {
-                    if (_floorMeasurements[floorIndex].StartDate >= doorStart.AddSeconds(-out_buffer))
+                    doorStart = m.StartDate.Value;
+                    doorEnd = m.EndDate.Value;
+                    if (_floorMeasurements[floorIndex].StartDate >= doorStart.AddSeconds(in_buffer))
                     {
-                        count += incDec;
+                        incDec = 1;
+                    }
+                    else
+                    {
+                        incDec = -1;
                     }
 
-                    floorIndex++;
+                    var count = 0;
+                    while (floorIndex < _floorMeasurements.Count && _floorMeasurements[floorIndex].EndDate <= doorEnd)
+                    {
+                        if (_floorMeasurements[floorIndex].StartDate >= doorStart.AddSeconds(-out_buffer))
+                        {
+                            count += incDec;
+                        }
+
+                        floorIndex++;
+                    }
+                    _inferredMeasurements.Add(new Measurement
+                    {
+                        Id = Guid.NewGuid(),
+                        StartDate = m.StartDate,
+                        EndDate = m.EndDate,
+                        Count = count.ToString()
+                    });
                 }
-                _inferredMeasurements.Add(new Measurement { StartDate = m.StartDate, EndDate = m.EndDate, Count = count.ToString() });
             }
             
         }

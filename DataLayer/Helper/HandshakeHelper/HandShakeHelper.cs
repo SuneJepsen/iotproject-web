@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using DataLayer.Domain;
 using Newtonsoft.Json;
 
@@ -20,8 +23,12 @@ namespace DataLayer.Helper.HandshakeHelper
 
         private List<Handshake> GetHandshakeEpochList()
         {
+
+            var filepath = AppDomain.CurrentDomain.BaseDirectory;
+            string newPath = Path.GetFullPath(Path.Combine(filepath, @"..\DataLayer\Settings\handshake.json"));
+
             List<Handshake> handshakeEpochs = new List<Handshake>();
-            using (StreamReader r = new StreamReader(@"..\..\..\DataLayer\Settings\handshake.json"))
+            using (StreamReader r = new StreamReader(newPath))
             {
                 string json = r.ReadToEnd();
                 handshakeEpochs = JsonConvert.DeserializeObject<List<Handshake>>(json);
@@ -61,7 +68,9 @@ namespace DataLayer.Helper.HandshakeHelper
             //System.IO.File.WriteAllText(@"..\..\..\DataLayer\Settings\handshake.json", string.Empty);
             handshakeEpochs.Add(handshake);
             string jsonlist = JsonConvert.SerializeObject(handshakeEpochs, Formatting.Indented);
-            File.WriteAllText(@"..\..\..\DataLayer\Settings\handshake.json", jsonlist);
+            var filepath = AppDomain.CurrentDomain.BaseDirectory;
+            string newPath = Path.GetFullPath(Path.Combine(filepath, @"..\DataLayer\Settings\handshake.json"));
+            File.WriteAllText(newPath, jsonlist);
         }
 
     }

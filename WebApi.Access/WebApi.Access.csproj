@@ -179,6 +179,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IotController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Domain\DeviceData.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -263,6 +264,10 @@
     <ProjectReference Include="..\DataLayer\DataLayer.csproj">
       <Project>{c1f652c1-4482-48b1-bfbd-b5edfdad3160}</Project>
       <Name>DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Library.Job\Library.Job.csproj">
+      <Project>{07A77311-BFB9-4ABC-9EA4-79E9BE9C59CE}</Project>
+      <Name>Library.Job</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
