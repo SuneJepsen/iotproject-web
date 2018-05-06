@@ -15,9 +15,11 @@ namespace DataLayer.Helper.HandshakeHelper
     public class HandShakeHelper : IHandShakeHelper
     {
         private DateHelper.DateHelper _dateHelper;
+        private string _handshakeFilePath;
 
-        public HandShakeHelper()
+        public HandShakeHelper(string handshakeFilePath)
         {
+            _handshakeFilePath = handshakeFilePath;
             _dateHelper = new DateHelper.DateHelper();
         }
 
@@ -25,7 +27,8 @@ namespace DataLayer.Helper.HandshakeHelper
         {
 
             var filepath = AppDomain.CurrentDomain.BaseDirectory;
-            string newPath = Path.GetFullPath(Path.Combine(filepath, @"..\DataLayer\Settings\handshake.json"));
+            //string newPath = Path.GetFullPath(Path.Combine(filepath, @"..\DataLayer\Settings\handshake.json"));
+            string newPath = Path.GetFullPath(Path.Combine(filepath, _handshakeFilePath));
 
             List<Handshake> handshakeEpochs = new List<Handshake>();
             using (StreamReader r = new StreamReader(newPath))
@@ -69,7 +72,8 @@ namespace DataLayer.Helper.HandshakeHelper
             handshakeEpochs.Add(handshake);
             string jsonlist = JsonConvert.SerializeObject(handshakeEpochs, Formatting.Indented);
             var filepath = AppDomain.CurrentDomain.BaseDirectory;
-            string newPath = Path.GetFullPath(Path.Combine(filepath, @"..\DataLayer\Settings\handshake.json"));
+            string newPath = Path.GetFullPath(Path.Combine(filepath, _handshakeFilePath));
+            //string newPath = Path.GetFullPath(Path.Combine(filepath, @"..\DataLayer\Settings\handshake.json"));
             File.WriteAllText(newPath, jsonlist);
         }
 

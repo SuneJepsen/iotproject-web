@@ -17,27 +17,41 @@ namespace WebApi.Access.ServiceLayer
         public DeviceData GetInferredDataForCurrentDay(Guid? guid)
         {
             DeviceData deviceDataInferred = new DeviceData();
-            deviceDataInferred.Measurements = _facade.GetAllInferredData();
-            if (guid.HasValue && deviceDataInferred.Measurements != null)
+            var allInferredData = _facade.GetAllInferredData();
+            deviceDataInferred.Measurements =new List<Measurement>();
+            if (guid.HasValue && allInferredData != null)
             {
-                deviceDataInferred.Title = deviceDataInferred.Measurements.FirstOrDefault()?.Title;
-                List<Measurement> returnMeasurements = new List<Measurement>();
+                deviceDataInferred.Title = allInferredData.FirstOrDefault()?.Title;
                 int count = 0;
-                for (int i = 0; i < deviceDataInferred.Measurements.Count; i++)
+                for (int i = 0; i < allInferredData.Count; i++)
                 {
-                    if (deviceDataInferred.Measurements[i].Id == guid.Value)
+                    if (allInferredData[i].Id == guid.Value)
                     {
-                        count = i;
+                        count = i+1;
                         break;
                     }
                 }
-                deviceDataInferred.Measurements =
-                    deviceDataInferred.Measurements.GetRange(count, deviceDataInferred.Measurements.Count);
+                if (count == allInferredData.Count - 1) // take the last element
+                {
+                    deviceDataInferred.Measurements = new List<Measurement>();
+                    deviceDataInferred.Measurements.Add(allInferredData[count]);
+                }
+                else if(count > allInferredData.Count - 1) // no more elements to return
+                {
+                    deviceDataInferred.Measurements = new List<Measurement>();
+                }
+                else
+                {
+                    deviceDataInferred.Measurements =
+                        allInferredData.GetRange(count, (allInferredData.Count - count));
+                }
+
                 return deviceDataInferred;
             }
-            else if(deviceDataInferred.Measurements != null)
+            else if(allInferredData != null)
             {
-                deviceDataInferred.Title = deviceDataInferred.Measurements.FirstOrDefault()?.Title;
+                deviceDataInferred.Measurements = allInferredData;
+                deviceDataInferred.Title = allInferredData.FirstOrDefault()?.Title;
             }
             return deviceDataInferred;
         }
@@ -51,23 +65,37 @@ namespace WebApi.Access.ServiceLayer
             if (doorGuid.HasValue && allCopyDataDoor != null)
             {
                 deviceDataDoor = new DeviceData();
-                deviceDataDoor.Title = allCopyDataDoor.FirstOrDefault()?.Title;
+                deviceDataDoor.Title = allCopyDataDoor.FirstOrDefault(x=>x.Title!=null)?.Title;
+                deviceDataDoor.Type = allCopyDataDoor.FirstOrDefault(x=>x.Type != null)?.Type;
                 int count = 0;
                 for (int i = 0; i < allCopyDataDoor.Count; i++)
                 {
                     if (allCopyDataDoor[i].Id == doorGuid.Value)
                     {
-                        count = i;
+                        count = i+1;
                         break;
                     }
                 }
-                deviceDataDoor.Measurements = allCopyDataDoor.GetRange(count, allCopyDataDoor.Count);
+                if (count == allCopyDataDoor.Count - 1) // take the last element
+                {
+                    deviceDataDoor.Measurements.Add(allCopyDataDoor[count]);
+                }
+                else if (count > allCopyDataDoor.Count - 1) // no more elements to return
+                {
+                    deviceDataDoor.Measurements = new List<Measurement>();
+                }
+                else
+                {
+                    deviceDataDoor.Measurements=allCopyDataDoor.GetRange(count, allCopyDataDoor.Count - count);
+
+                }
                 deviceDataList.Add(deviceDataDoor);
             }
             else if(allCopyDataDoor!= null)
             {
                 deviceDataDoor = new DeviceData();
-                deviceDataDoor.Title = allCopyDataDoor.FirstOrDefault()?.Title;
+                deviceDataDoor.Title = allCopyDataDoor.FirstOrDefault(x => x.Title!= null)?.Title;
+                deviceDataDoor.Type = allCopyDataDoor.FirstOrDefault(x=>x.Type!=null)?.Type;
                 deviceDataDoor.Measurements = allCopyDataDoor;
                 deviceDataList.Add(deviceDataDoor);
             }
@@ -80,17 +108,30 @@ namespace WebApi.Access.ServiceLayer
                 {
                     if (allCopyDataFloor[i].Id == floorGuid.Value)
                     {
-                        count = i;
+                        count = i+1;
                         break;
                     }
                 }
-                deviceDataFloor.Measurements= allCopyDataFloor.GetRange(count, allCopyDataFloor.Count);
+                if (count == allCopyDataFloor.Count - 1)// take the last element
+                {
+                    deviceDataFloor.Measurements.Add(allCopyDataFloor[count]);
+
+                }
+                else if (count > allCopyDataFloor.Count - 1) // no more elements to return
+                {
+                    deviceDataFloor.Measurements = new List<Measurement>();
+                }
+                else
+                {
+                    deviceDataFloor.Measurements = allCopyDataFloor.GetRange(count, allCopyDataFloor.Count - count);
+                }
                 deviceDataList.Add(deviceDataFloor);
             }
             else if (allCopyDataFloor != null)
             {
                 deviceDataFloor = new DeviceData();
-                deviceDataFloor.Title = allCopyDataFloor.FirstOrDefault()?.Title;
+                deviceDataFloor.Title = allCopyDataFloor.FirstOrDefault(x=>x.Title!=null)?.Title;
+                deviceDataFloor.Type = allCopyDataFloor.FirstOrDefault(x => x.Type != null)?.Type;
                 deviceDataFloor.Measurements = allCopyDataFloor;
                 deviceDataList.Add(deviceDataFloor);
             }

@@ -6,33 +6,34 @@ using DataLayer.Domain;
 using DataLayer.Helper.DateHelper;
 using DataLayer.Helper.HandshakeHelper;
 using DataLayer.Repository;
+using DataLayer.Repository.Abstract;
 using DataLayer.Repository.Concrete;
 
 namespace DataLayer.Facade
 {
     public class FacadeData: IFacade
     {
-        private FirebaseDb<MeasurementRaw> rawDataFloorRepo;
-        private FirebaseDb<MeasurementRaw> rawDataDoorRepo;
-        private FirebaseDb<Measurement> copyDataFloorRepo;
-        private FirebaseDb<Measurement> copyDataDoorRepo;
-        private FirebaseDb<Measurement> inferredDataRepo;
+        private IRepository<MeasurementRaw> rawDataFloorRepo;
+        private IRepository<MeasurementRaw> rawDataDoorRepo;
+        private IRepository<Measurement> copyDataFloorRepo;
+        private IRepository<Measurement> copyDataDoorRepo;
+        private IRepository<Measurement> inferredDataRepo;
         private IDateHelper _dateHelper;
         private DateTime? _handshakeFloor;
         private DateTime? _handshakeDoor;
         private IHandShakeHelper _handShakeHelper;
         private RijndaelManaged _cryptographyTool;
 
-        public FacadeData()
+        public FacadeData(IHandShakeHelper handShakeHelper)
         {
-            rawDataFloorRepo = new FirebaseDb<MeasurementRaw>(string.Format(FirebaseConnectionString.RawDataFloor, string.Empty));
-            rawDataDoorRepo = new FirebaseDb<MeasurementRaw>(string.Format(FirebaseConnectionString.RawDataDoor, string.Empty));
+            rawDataFloorRepo = new FirebaseDbAlt<MeasurementRaw>(string.Format(FirebaseConnectionString.RawDataFloor, FirebaseConnectionString.RawDataFloorNodeId, string.Empty), FirebaseConnectionString.RawDataFloorNodeId);
+            rawDataDoorRepo = new FirebaseDbAlt<MeasurementRaw>(string.Format(FirebaseConnectionString.RawDataDoor, FirebaseConnectionString.RawDataDoorNodeId, string.Empty), FirebaseConnectionString.RawDataDoorNodeId);
             copyDataFloorRepo = new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.CopyDataFloor, DateTime.Now.ToString("dd-MM-yyyy")));
             copyDataDoorRepo = new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.CopyDataDoor, DateTime.Now.ToString("dd-MM-yyyy")));
             inferredDataRepo = new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.InferredData, DateTime.Now.ToString("dd-MM-yyyy")));
             _cryptographyTool = new RijndaelManaged();
             _dateHelper = new DateHelper();
-            _handShakeHelper = new HandShakeHelper();
+            _handShakeHelper = handShakeHelper;
             _handshakeFloor = _handShakeHelper.GetHandShakeFloor();
             _handshakeDoor = _handShakeHelper.GetHandShakeDoor();
         
@@ -66,6 +67,8 @@ namespace DataLayer.Facade
                     measurement.EndDate = _dateHelper.GetDateTime(measurementRaw.EndDate.Value, handShake);
                     measurement.Epoc = measurementRaw.Time;
                     measurement.EpocToDatetime = _dateHelper.ConvertFromEpoch(measurementRaw.Time);
+                    measurement.Type = measurementRaw.Type;
+                    measurement.Title= measurementRaw.Title;
                     measurements.Add(measurement);
                 }
 

@@ -48,6 +48,7 @@
     <Compile Include="Crypto\ICryptography.cs" />
     <Compile Include="Crypto\RijndaelManaged.cs" />
     <Compile Include="Domain\Handshake.cs" />
+    <Compile Include="Domain\IMeasurement.cs" />
     <Compile Include="Domain\MeasurementRaw.cs" />
     <Compile Include="Domain\Measurement.cs" />
     <Compile Include="Facade\FacadeData.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Helper\HandshakeHelper\IHandShakeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Abstract\IRepository.cs" />
+    <Compile Include="Repository\Concrete\FirebaseDbAlt.cs" />
     <Compile Include="Repository\Concrete\FirebaseDb.cs" />
     <Compile Include="Repository\FirebaseConnectionString.cs" />
   </ItemGroup>

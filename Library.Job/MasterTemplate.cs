@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DataLayer.Domain;
 using DataLayer.Facade;
+using DataLayer.Helper.HandshakeHelper;
 using DataLayer.Repository;
 using DataLayer.Repository.Concrete;
 
@@ -16,7 +17,7 @@ namespace Library.Job
 
         protected MasterTemplate()
         {
-            facade = new FacadeData();
+            facade = new FacadeData(new HandShakeHelper(@"..\..\..\DataLayer\Settings\handshake.json"));
             inferredMeasurements = new List<Measurement>();
         }
 
@@ -40,9 +41,9 @@ namespace Library.Job
         private void End()
         {
             facade.SaveCopyFloorMeasurements(floorMeasurements);
-            facade.DeleteRawDataFloor();
+            //facade.DeleteRawDataFloor();
             facade.SaveCopyDoorMeasurements(doorMeasurements);
-            facade.DeleteRawDataDoor();
+            //facade.DeleteRawDataDoor();
             facade.SaveInferredMeasurements(inferredMeasurements);
         }
  

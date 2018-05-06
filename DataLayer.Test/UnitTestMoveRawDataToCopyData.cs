@@ -1,6 +1,7 @@
 ﻿using System;
 using DataLayer.Domain;
 using DataLayer.Facade;
+using DataLayer.Helper.HandshakeHelper;
 using DataLayer.Repository;
 using DataLayer.Repository.Abstract;
 using DataLayer.Repository.Concrete;
@@ -14,7 +15,7 @@ namespace DataLayer.Test
         [TestMethod]
         public void Test_Move_RawData_To_CopyData()
         {
-            IFacade facade = new FacadeData();
+            IFacade facade = new FacadeData(new HandShakeHelper(@"..\..\..\DataLayer\Settings\handshake.json"));
             var floorMeasurements = facade.GetAllRawDataFloorAsMeasurement();
             facade.SaveCopyFloorMeasurements(floorMeasurements);
             //rawDataFloorRepo.DeleteAll();
