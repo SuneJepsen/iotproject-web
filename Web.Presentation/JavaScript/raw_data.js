@@ -4,73 +4,81 @@ $(document).ready(function () {
     console.log("ready!");
 
     var divs = [];
+    var init_times = [];
+    var noOfDevices = 0;
 
-    var rawData = [{ Type: "abc", Title: "proximity", Measurements : [
-            { StartDate: 1525373817000, EndDate: 1525373817020 },
-            { StartDate: 1525373818000, EndDate: 1525373818030 },
-            { StartDate: 1525373819000, EndDate: 1525373819010 },
-            { StartDate: 1525373820000, EndDate: 1525373820120 },
-            { StartDate: 1525373821000, EndDate: 1525373821020 },
-            { StartDate: 1525373822000, EndDate: 1525373822050 },
-            { StartDate: 1525373823000, EndDate: 1525373823020 },
-            { StartDate: 1525373824000, EndDate: 1525373824220 },
-            { StartDate: 1525373825000, EndDate: 1525373825020 },
-            { StartDate: 1525373826000, EndDate: 1525373826080 },
-            { StartDate: 1525373827000, EndDate: 1525373827090 },
-            { StartDate: 1525373828000, EndDate: 1525373828000 }
-        ]
-    }, {
-        Type: "def", Title: "acc", Measurements: [
-            { StartDate: 1525373817000, EndDate: 1525373817020 },
-            { StartDate: 1525373818000, EndDate: 1525373818030 },
-            { StartDate: 1525373819000, EndDate: 1525373819010 },
-            { StartDate: 1525373820000, EndDate: 1525373820120 },
-            { StartDate: 1525373821000, EndDate: 1525373821020 },
-            { StartDate: 1525373822000, EndDate: 1525373822050 },
-            { StartDate: 1525373823000, EndDate: 1525373823020 },
-            { StartDate: 1525373824000, EndDate: 1525373824220 },
-            { StartDate: 1525373825000, EndDate: 1525373825020 },
-            { StartDate: 1525373826000, EndDate: 1525373826080 },
-            { StartDate: 1525373827000, EndDate: 1525373827090 },
-            { StartDate: 1525373828000, EndDate: 1525373828000 }
-        ]
-        }];
+    //var rawData = [{ Type: "abc", Title: "proximity", Measurements : [
+    //        { StartDate: 1525373817000, EndDate: 1525373817020 },
+    //        { StartDate: 1525373818000, EndDate: 1525373818030 },
+    //        { StartDate: 1525373819000, EndDate: 1525373819010 },
+    //        { StartDate: 1525373820000, EndDate: 1525373820120 },
+    //        { StartDate: 1525373821000, EndDate: 1525373821020 },
+    //        { StartDate: 1525373822000, EndDate: 1525373822050 },
+    //        { StartDate: 1525373823000, EndDate: 1525373823020 },
+    //        { StartDate: 1525373824000, EndDate: 1525373824220 },
+    //        { StartDate: 1525373825000, EndDate: 1525373825020 },
+    //        { StartDate: 1525373826000, EndDate: 1525373826080 },
+    //        { StartDate: 1525373827000, EndDate: 1525373827090 },
+    //        { StartDate: 1525373828000, EndDate: 1525373828000 }
+    //    ]
+    //}, {
+    //    Type: "def", Title: "acc", Measurements: [
+    //        { StartDate: 1525373817000, EndDate: 1525373817020 },
+    //        { StartDate: 1525373818000, EndDate: 1525373818030 },
+    //        { StartDate: 1525373819000, EndDate: 1525373819010 },
+    //        { StartDate: 1525373820000, EndDate: 1525373820120 },
+    //        { StartDate: 1525373821000, EndDate: 1525373821020 },
+    //        { StartDate: 1525373822000, EndDate: 1525373822050 },
+    //        { StartDate: 1525373823000, EndDate: 1525373823020 },
+    //        { StartDate: 1525373824000, EndDate: 1525373824220 },
+    //        { StartDate: 1525373825000, EndDate: 1525373825020 },
+    //        { StartDate: 1525373826000, EndDate: 1525373826080 },
+    //        { StartDate: 1525373827000, EndDate: 1525373827090 },
+    //        { StartDate: 1525373828000, EndDate: 1525373828000 }
+    //    ]
+    //    }];
 
-    var rawData2 = [{
-        Type: "def", Title: "acc", Measurements: [
-            { StartDate: 1525373829000, EndDate: 1525373829020 },
-            { StartDate: 1525373830000, EndDate: 1525373830120 },
-            { StartDate: 1525373831000, EndDate: 1525373831220 },
-            { StartDate: 1525373832000, EndDate: 1525373832320 }]
+    //var rawData2 = [{
+    //    Type: "def", Title: "acc", Measurements: [
+    //        { StartDate: 1525373829000, EndDate: 1525373829020 },
+    //        { StartDate: 1525373830000, EndDate: 1525373830120 },
+    //        { StartDate: 1525373831000, EndDate: 1525373831220 },
+    //        { StartDate: 1525373832000, EndDate: 1525373832320 }]
+    //}
+    //];
+
+    //var rawData3 = [{
+    //    Type: "def", Title: "acc", Measurements: [
+    //        { StartDate: 1525373833000, EndDate: 1525373833100 },
+    //        { StartDate: 1525373834000, EndDate: 1525373834020 }
+    //    ]
+    //}, {
+    //    Type: "abc", Title: "proximity", Measurements: [
+    //        { StartDate: 1525373833000, EndDate: 1525373833100 },
+    //        { StartDate: 1525373834000, EndDate: 1525373834020 }
+    //        ]
+    //    }];
+
+    var last_door = "";
+    var last_floor = "";
+
+    setInterval(retrieveData, 5000);
+
+    function retrieveData() {
+        $.ajax({ // Maybe only send timestamp and not ids (what if many devices? - not dynamic right now)
+            url: "https://webapiaccess20180420013135.azurewebsites.net//api/iot/GetCopyData?doorGuid="+last_door+"&floorGuid="+last_floor, success: function (result) {
+                console.log(result);
+                //last_door = ;
+                //last_floor = ;
+                processResult(result);
+            }, error: function (err) {
+                console.log("error")
+                console.log(err);
+            }
+        });
     }
-    ];
-
-    var rawData3 = [{
-        Type: "def", Title: "acc", Measurements: [
-            { StartDate: 1525373833000, EndDate: 1525373833100 },
-            { StartDate: 1525373834000, EndDate: 1525373834020 }
-        ]
-    }, {
-        Type: "abc", Title: "proximity", Measurements: [
-            { StartDate: 1525373833000, EndDate: 1525373833100 },
-            { StartDate: 1525373834000, EndDate: 1525373834020 }
-            ]
-        }];
-
-    var data = [];
-
-    //$.ajax({
-    //    url: "http://webapiaccess20180420013135.azurewebsites.net/api/iot", success: function (result) {
-    //        console.log(result);
-    //        data = result;
-    //    }, error: function (err) {
-    //        console.log("error")
-    //        console.log(err);
-    //    }
-    //});
 
     var count = 0;
-    var init_time = rawData[0].StartDate;
 
     var createGraph = function (divName, title, init_time) {
         divs[divs.length] = divName;
@@ -78,6 +86,8 @@ $(document).ready(function () {
         div.setAttribute("id", divName);
         div.setAttribute("class", "col-lg-12 col-xl-6 col-sm-12 col-xs-12");
         $(".row").append(div);
+        init_times[noOfDevices] = { Device: divName, StartDate: init_time };
+        noOfDevices++;
 
         var layout = {
             title: title,
@@ -106,7 +116,7 @@ $(document).ready(function () {
     var updateGraph = function (data, div, interval) {
         var end_time = data[data.length - 1].EndDate;
         var start_time = end_time - interval;
-
+        var init_time = init_times.find(x => x.Device == div).StartDate;
         var update = reshapeArray(data);
 
         var minuteView = {
@@ -152,15 +162,15 @@ $(document).ready(function () {
         });
     }
 
-    processResult(rawData2);
+    //processResult(rawData);
 
     //createGraph('myDiv', init_time);
     //createGraph('myDiv2', init_time);
     //createGraph('myDiv3', init_time);
 
     //setTimeout(function () {updateGraph(rawData, 'myDiv', 10000); }, 1000);
-    setTimeout(function () { processResult(rawData); }, 1000);
-    setTimeout(function () { processResult(rawData3); }, 2000);
+    //setTimeout(function () { processResult(rawData); }, 1000);
+    //setTimeout(function () { processResult(rawData3); }, 2000);
     //setTimeout(function () { updateGraph(updatedinferred2, 'myDiv3', 10000); }, 3000);
 
 });
