@@ -72,5 +72,9 @@ namespace DataLayer.Helper.HandshakeHelper
             File.WriteAllText(newPath, jsonlist);
         }
 
+        public List<Handshake> GetHandShakes()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

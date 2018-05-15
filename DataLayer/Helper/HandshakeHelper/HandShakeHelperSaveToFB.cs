@@ -54,8 +54,31 @@ namespace DataLayer.Helper.HandshakeHelper
 
         public void SaveHandshake(Handshake handshake)
         {
+
             dataHandshakeRepo.Save(new List<Handshake>(){handshake});
         }
 
+        public List<Handshake> GetHandShakes()
+        {
+            List<Handshake> handshakes = new List<Handshake>();
+            List<Handshake> allHandshakes = GetHandshakeEpochList();
+            if (allHandshakes == null) return handshakes;
+            IEnumerable<Handshake> filteredList = allHandshakes.GroupBy(sensor => sensor.Id).Select(group => group.First());
+            foreach (var handshake in filteredList)
+            {
+                var candidateHandshakeList = allHandshakes.Where(x => x.Id == handshake.Id);
+                if (candidateHandshakeList != null && candidateHandshakeList.Any() )
+                {
+                    var candidate = candidateHandshakeList.OrderByDescending(x => x.CreatedDate).FirstOrDefault();
+
+                    if (candidate != null && candidate.Epoch.HasValue)
+                    {
+                        candidate.EpochToDatetime = _dateHelper.ConvertFromEpoch(candidate.Epoch.Value);
+                        handshakes.Add(candidate);
+                    }
+                }
+            }
+            return handshakes;
+        }
     }
 }

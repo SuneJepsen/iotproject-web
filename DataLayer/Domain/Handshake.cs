@@ -11,6 +11,11 @@ namespace DataLayer.Domain
         public long? Accelometer { get; set; }
         public long? Promixitmity { get; set; }
 
+        public string Id { get; set; }
+
+        public long? Epoch{ get; set; }
+
         public DateTime? CreatedDate{ get; set; }
+        public DateTime? EpochToDatetime { get; set; }
     }
 }

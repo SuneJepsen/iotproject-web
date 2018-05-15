@@ -37,16 +37,15 @@ namespace WebApi.Access.Controllers
         }
         /// <summary>
         /// The measurement with the passed guid will not be included in the return result
-        /// Ex: /api/iot/GetCopyData?doorGuid=6b3d3b0c-3644-4b22-b40e-fd84b7794c21&floorGuid=d160eb6f-a71a-4eca-bf99-6dc65b557b3f
-        /// Ex. If the whole list should be returned, then pass an empty guid as: /api/iot/GetCopyData?doorGuid=&floorGuid=
+        /// Ex: /api/iot/GetCopyData?endDate=2018-05-15 21:58:21.200 - please look at the database for end dates
+        /// Ex. If the whole list should be returned, then pass an empty endDate as: /api/iot/GetCopyData?endDate=
         /// </summary>
-        /// <param name="doorGuid"></param>
-        /// <param name="floorGuid"></param>
+        /// <param name="endDate"></param>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<DeviceData> GetCopyData(Guid? doorGuid, Guid? floorGuid)
+        public IEnumerable<DeviceData> GetCopyData(DateTime? endDate)
         {
-            return _inferredDataService.GetCopyDataForCurrentDay(doorGuid, floorGuid);
+            return _inferredDataService.GetCopyDataForCurrentDay(endDate);
         }
         [HttpGet]
         public string Move()

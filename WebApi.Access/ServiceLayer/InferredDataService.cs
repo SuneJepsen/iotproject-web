@@ -55,85 +55,31 @@ namespace WebApi.Access.ServiceLayer
             }
             return deviceDataInferred;
         }
-        public List<DeviceData> GetCopyDataForCurrentDay(Guid? doorGuid, Guid? floorGuid)
+        public List<DeviceData> GetCopyDataForCurrentDay(DateTime? endDate)
         {
             List<DeviceData>deviceDataList = new List<DeviceData>();
-            DeviceData deviceDataDoor;
-            DeviceData deviceDataFloor;
-            var allCopyDataDoor = _facade.GetAllCopyDataDoor();
-            var allCopyDataFloor = _facade.GetAllCopyDataFloor();
-            if (doorGuid.HasValue && allCopyDataDoor != null)
+            var allCopySensorData = _facade.GetAllCopyData();
+            DeviceData deviceData = null;
+            List<Measurement> filteredCopySensorData = allCopySensorData.GroupBy(sensor => sensor.Type).Select(group => group.First()).ToList();
+            foreach (var sensor in filteredCopySensorData)
             {
-                deviceDataDoor = new DeviceData();
-                deviceDataDoor.Title = allCopyDataDoor.FirstOrDefault(x=>x.Title!=null)?.Title;
-                deviceDataDoor.Type = allCopyDataDoor.FirstOrDefault(x=>x.Type != null)?.Type;
-                int count = 0;
-                for (int i = 0; i < allCopyDataDoor.Count; i++)
+                var measurements = allCopySensorData.Where(x => x.Type == sensor.Type).ToList();
+                if (measurements.Any())
                 {
-                    if (allCopyDataDoor[i].Id == doorGuid.Value)
-                    {
-                        count = i+1;
-                        break;
-                    }
-                }
-                if (count == allCopyDataDoor.Count - 1) // take the last element
-                {
-                    deviceDataDoor.Measurements.Add(allCopyDataDoor[count]);
-                }
-                else if (count > allCopyDataDoor.Count - 1) // no more elements to return
-                {
-                    deviceDataDoor.Measurements = new List<Measurement>();
-                }
-                else
-                {
-                    deviceDataDoor.Measurements=allCopyDataDoor.GetRange(count, allCopyDataDoor.Count - count);
+                    deviceData = new DeviceData();
+                    deviceData.Title = measurements.FirstOrDefault(x => x.Title != null)?.Title;
+                    deviceData.Type = measurements.FirstOrDefault(x=>x.Type != null)?.Type;
 
-                }
-                deviceDataList.Add(deviceDataDoor);
-            }
-            else if(allCopyDataDoor!= null)
-            {
-                deviceDataDoor = new DeviceData();
-                deviceDataDoor.Title = allCopyDataDoor.FirstOrDefault(x => x.Title!= null)?.Title;
-                deviceDataDoor.Type = allCopyDataDoor.FirstOrDefault(x=>x.Type!=null)?.Type;
-                deviceDataDoor.Measurements = allCopyDataDoor;
-                deviceDataList.Add(deviceDataDoor);
-            }
-            if (floorGuid.HasValue && allCopyDataFloor != null)
-            {
-                deviceDataFloor = new DeviceData();
-                deviceDataFloor.Title = allCopyDataFloor.FirstOrDefault()?.Title;
-                int count = 0;
-                for (int i = 0; i < allCopyDataFloor.Count; i++)
-                {
-                    if (allCopyDataFloor[i].Id == floorGuid.Value)
+                    if (endDate.HasValue)
                     {
-                        count = i+1;
-                        break;
+                        deviceData.Measurements = measurements.Where(x => x.EndDate > endDate.Value).ToList();
                     }
+                    else
+                    {
+                        deviceData.Measurements = measurements;
+                    }
+                    deviceDataList.Add(deviceData);
                 }
-                if (count == allCopyDataFloor.Count - 1)// take the last element
-                {
-                    deviceDataFloor.Measurements.Add(allCopyDataFloor[count]);
-
-                }
-                else if (count > allCopyDataFloor.Count - 1) // no more elements to return
-                {
-                    deviceDataFloor.Measurements = new List<Measurement>();
-                }
-                else
-                {
-                    deviceDataFloor.Measurements = allCopyDataFloor.GetRange(count, allCopyDataFloor.Count - count);
-                }
-                deviceDataList.Add(deviceDataFloor);
-            }
-            else if (allCopyDataFloor != null)
-            {
-                deviceDataFloor = new DeviceData();
-                deviceDataFloor.Title = allCopyDataFloor.FirstOrDefault(x=>x.Title!=null)?.Title;
-                deviceDataFloor.Type = allCopyDataFloor.FirstOrDefault(x => x.Type != null)?.Type;
-                deviceDataFloor.Measurements = allCopyDataFloor;
-                deviceDataList.Add(deviceDataFloor);
             }
             return deviceDataList;
         }

@@ -12,5 +12,6 @@ namespace DataLayer.Helper.HandshakeHelper
         DateTime? GetHandShakeFloor();
         DateTime? GetHandShakeDoor();
         void SaveHandshake(Handshake handshake);
+        List<Handshake> GetHandShakes();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using DataLayer.Crypto;
 using DataLayer.Domain;
 using DataLayer.Helper.DateHelper;
@@ -11,47 +12,23 @@ using DataLayer.Repository.Concrete;
 
 namespace DataLayer.Facade
 {
-    public class FacadeData: IFacade
+    public class FacadeData : IFacade
     {
-        private IRepository<MeasurementRaw> rawDataFloorRepo;
-        private IRepository<MeasurementRaw> rawDataDoorRepo;
-        private IRepository<Measurement> copyDataFloorRepo;
-        private IRepository<Measurement> copyDataDoorRepo;
+        private IRepository<MeasurementRaw> rawDataRepo;
+        private IRepository<Measurement> copyDataRepo;
+        private List<Handshake> handshakes = new List<Handshake>();
         private IRepository<Measurement> inferredDataRepo;
         private IDateHelper _dateHelper;
-        private DateTime? _handshakeFloor;
-        private DateTime? _handshakeDoor;
         private IHandShakeHelper _handShakeHelper;
         private RijndaelManaged _cryptographyTool;
 
         public FacadeData(IHandShakeHelper handShakeHelper)
         {
-            rawDataFloorRepo = new FirebaseDbAlt<MeasurementRaw>(string.Format(FirebaseConnectionString.RawDataFloor, FirebaseConnectionString.RawDataFloorNodeId, string.Empty), FirebaseConnectionString.RawDataFloorNodeId);
-            rawDataDoorRepo = new FirebaseDbAlt<MeasurementRaw>(string.Format(FirebaseConnectionString.RawDataDoor, FirebaseConnectionString.RawDataDoorNodeId, string.Empty), FirebaseConnectionString.RawDataDoorNodeId);
-            copyDataFloorRepo = new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.CopyDataFloor, DateTime.Now.ToString("dd-MM-yyyy")));
-            copyDataDoorRepo = new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.CopyDataDoor, DateTime.Now.ToString("dd-MM-yyyy")));
+            _handShakeHelper = handShakeHelper;
+            _dateHelper = new DateHelper();
+            copyDataRepo = new FirebaseCopyMeasurement<Measurement>(string.Format(FirebaseConnectionString.CopyData, string.Empty));
             inferredDataRepo = new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.InferredData, DateTime.Now.ToString("dd-MM-yyyy")));
             _cryptographyTool = new RijndaelManaged();
-            _dateHelper = new DateHelper();
-            _handShakeHelper = handShakeHelper;
-            _handshakeFloor = _handShakeHelper.GetHandShakeFloor();
-            _handshakeDoor = _handShakeHelper.GetHandShakeDoor();
-        
-            var handshakeFloor = rawDataFloorRepo.GetAll().Where(x=>x.StartDate==0 && x.EndDate==0).FirstOrDefault();
-            var handshakeDoor= rawDataDoorRepo.GetAll().Where(x => x.StartDate == 0 && x.EndDate == 0).FirstOrDefault();
-            if (handshakeDoor != null && handshakeFloor != null)
-            {
-                var handshake = new Handshake()
-                {
-                    Accelometer = handshakeDoor.Time,
-                    Promixitmity = handshakeFloor.Time,
-                    CreatedDate = DateTime.Now
-                };
-                _handShakeHelper.SaveHandshake(handshake);
-                _handshakeFloor = _handShakeHelper.GetHandShakeFloor();
-                _handshakeDoor = _handShakeHelper.GetHandShakeDoor();
-            }
-         
         }
         private List<Measurement> ConvertToMeasurement(List<MeasurementRaw> rawData, DateTime handShake)
         {
@@ -75,32 +52,87 @@ namespace DataLayer.Facade
             }
             return measurements;
         }
-        public List<Measurement> GetAllRawDataFloorAsMeasurement()
+
+
+        public List<Measurement> GetAllRawDataAsMeasurement()
         {
-            if(!_handshakeFloor.HasValue) throw  new Exception("no handshakefloor value");
-            var rawData = rawDataFloorRepo.GetAll();
-            List<Measurement> measurements = ConvertToMeasurement(rawData, _handshakeFloor.Value);
+
+            rawDataRepo = new FirebaseRawMeasurement<MeasurementRaw>(string.Format(FirebaseConnectionString.RawData, string.Empty, string.Empty));
+            var allRawSensorData = rawDataRepo.GetAll().ToList();
+            IEnumerable<MeasurementRaw> filteredList = allRawSensorData.GroupBy(sensor => sensor.Type).Select(group => group.First());
+            foreach (var sensor in filteredList)
+            {
+                var candidateForHandshake = allRawSensorData.Where(x => x.Type == sensor.Type).FirstOrDefault(x => x.StartDate == 0 && x.EndDate == 0);
+                if (candidateForHandshake != null)
+                {
+                    var handshake = new Handshake()
+                    {
+                        Id = candidateForHandshake.Type,
+                        Epoch = candidateForHandshake.Time,
+                        EpochToDatetime = _dateHelper.ConvertFromEpoch(candidateForHandshake.Time),
+                        CreatedDate = DateTime.Now
+                    };
+                    _handShakeHelper.SaveHandshake(handshake);
+                    handshakes.Add(handshake);
+                }
+            }
+            if (!handshakes.Any())
+            {
+                handshakes = _handShakeHelper.GetHandShakes();
+            }
+
+
+            if (!handshakes.Any()) throw new Exception("no handshake available");
+            List<Measurement> measurements = new List<Measurement>();
+            foreach (var handshake in handshakes)
+            {
+                var sensorData = allRawSensorData.Where(x => x.Type == handshake.Id).ToList();
+                if (handshake.EpochToDatetime != null)
+                {
+                    var convertedMeasurements = ConvertToMeasurement(sensorData, handshake.EpochToDatetime.Value);
+                    measurements.AddRange(convertedMeasurements);
+                }
+            }
             return measurements;
         }
 
-        public List<Measurement> GetAllRawDataDoorAsMeasurement()
+        public void SaveCopyMeasurements(List<Measurement> measurements)
         {
-            if (!_handshakeDoor.HasValue) throw new Exception("no handshakeDoor value");
-            var rawData = rawDataDoorRepo.GetAll();
-            List<Measurement> measurements = ConvertToMeasurement(rawData, _handshakeDoor.Value);
-            return measurements;
+            var allCopySensorData = copyDataRepo.GetAll();
+            List<Measurement> filteredCopySensorData = allCopySensorData.GroupBy(sensor => sensor.Type).Select(group => group.First()).ToList();
+            if (filteredCopySensorData.Any())
+            {
+                foreach (var sensor in filteredCopySensorData)
+                {
+                    var measurementsToSave = measurements.Where(x => x.Type == sensor.Type).ToList();
+
+                    if (measurementsToSave.Any())
+                    {
+                        var copyDataRepoConcrete =new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.CopyData,sensor.Type));
+                        copyDataRepoConcrete.Save(measurementsToSave);
+                    }
+                }
+            }
+            else
+            {
+                List<Measurement> filteredMeasurements = measurements.GroupBy(sensor => sensor.Type).Select(group => group.First()).ToList();
+                foreach (var sensor in filteredMeasurements)
+                {
+                    var measurementsToSave = measurements.Where(x => x.Type == sensor.Type).ToList();
+
+                    if (measurementsToSave.Any())
+                    {
+                        var copyDataRepoConcrete = new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.CopyData, sensor.Type));
+                        copyDataRepoConcrete.Save(measurementsToSave);
+                    }
+                }
+            }
         }
 
-        public void SaveCopyFloorMeasurements(List<Measurement> measurements)
+        public List<Measurement> GetAllCopyData()
         {
-            copyDataFloorRepo.Save(measurements);
+            return copyDataRepo.GetAll();
         }
-
-        public void SaveCopyDoorMeasurements(List<Measurement> measurements)
-        {
-            copyDataDoorRepo.Save(measurements);
-        }
-
         public void SaveInferredMeasurements(List<Measurement> measurements)
         {
             foreach (var measurement in measurements)
@@ -113,42 +145,17 @@ namespace DataLayer.Facade
 
         public void DeleteRawDataFloor()
         {
-            rawDataFloorRepo.DeleteAll();
+            //rawDataFloorRepo.DeleteAll();
         }
 
         public void DeleteRawDataDoor()
         {
-            rawDataDoorRepo.DeleteAll();
+           // rawDataDoorRepo.DeleteAll();
         }
 
         public List<Measurement> GetAllInferredData()
         {
             return inferredDataRepo.GetAll();
         }
-        public List<Measurement> GetAllCopyDataDoor()
-        {
-            return copyDataDoorRepo.GetAll();
-        }
-        public List<Measurement> GetAllCopyDataFloor()
-        {
-            return copyDataFloorRepo.GetAll();
-        }
-        //public List<Measurement> GetDataForCurrentDay()
-        //{
-        //    var encryptedMeasurements = _repository.GetAll();
-        //    var decryptedMeasurements = new List<Measurement>();
-        //    Measurement decryptedMeasurement = null;
-        //    foreach (var encryptedMeasurement in encryptedMeasurements)
-        //    {
-        //        decryptedMeasurement = new Measurement();
-        //        decryptedMeasurement.Id = encryptedMeasurement.Id;
-        //        decryptedMeasurement.StartDate = encryptedMeasurement.StartDate;
-        //        decryptedMeasurement.EndDate = encryptedMeasurement.EndDate;
-        //        decryptedMeasurement.Count = _cryptographyTool.Decrypt(encryptedMeasurement.Count, CryptoConstants.passPhrase);
-        //        decryptedMeasurements.Add(decryptedMeasurement);
-        //    }
-        //    return decryptedMeasurements;
-        //}
-
     }
 }

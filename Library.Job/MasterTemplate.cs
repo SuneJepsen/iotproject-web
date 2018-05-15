@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DataLayer.Domain;
 using DataLayer.Facade;
 using DataLayer.Helper.HandshakeHelper;
-using DataLayer.Repository;
-using DataLayer.Repository.Concrete;
 
 namespace Library.Job
 {
     public abstract class MasterTemplate
     {
+        protected List<Measurement> allRawMeasurements;
         protected List<Measurement> floorMeasurements;
         protected List<Measurement> doorMeasurements;
         protected List<Measurement> inferredMeasurements;
@@ -17,16 +16,15 @@ namespace Library.Job
 
         protected MasterTemplate()
         {
-            //facade = new FacadeData(new HandShakeHelperSaveToFile(@"..\..\..\DataLayer\Settings\handshake.json"));
             facade = new FacadeData(new HandShakeHelperSaveToFB());
             inferredMeasurements = new List<Measurement>();
         }
 
         private void Initialize()
         {
-           
-            floorMeasurements = facade.GetAllRawDataFloorAsMeasurement();
-            doorMeasurements = facade.GetAllRawDataDoorAsMeasurement();
+            allRawMeasurements = facade.GetAllRawDataAsMeasurement();
+            doorMeasurements = allRawMeasurements.Where(x => x.Title == "ACC").ToList();
+            floorMeasurements = allRawMeasurements.Where(x => x.Title == "PRX").ToList();
         }
 
         public abstract void ModelData();
@@ -41,10 +39,8 @@ namespace Library.Job
 
         private void End()
         {
-            facade.SaveCopyFloorMeasurements(floorMeasurements);
+            facade.SaveCopyMeasurements(allRawMeasurements);
             //facade.DeleteRawDataFloor();
-            facade.SaveCopyDoorMeasurements(doorMeasurements);
-            //facade.DeleteRawDataDoor();
             facade.SaveInferredMeasurements(inferredMeasurements);
         }
  
