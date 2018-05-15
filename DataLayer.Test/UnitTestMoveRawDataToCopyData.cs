@@ -15,7 +15,8 @@ namespace DataLayer.Test
         [TestMethod]
         public void Test_Move_RawData_To_CopyData()
         {
-            IFacade facade = new FacadeData(new HandShakeHelper(@"..\..\..\DataLayer\Settings\handshake.json"));
+            //IFacade facade = new FacadeData(new HandShakeHelperSaveToFile(@"..\..\..\DataLayer\Settings\handshake.json"));
+            IFacade facade = new FacadeData(new HandShakeHelperSaveToFB());
             var floorMeasurements = facade.GetAllRawDataFloorAsMeasurement();
             facade.SaveCopyFloorMeasurements(floorMeasurements);
             //rawDataFloorRepo.DeleteAll();

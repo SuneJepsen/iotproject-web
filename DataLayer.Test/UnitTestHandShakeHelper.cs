@@ -14,7 +14,7 @@ namespace DataLayer.Test
         {
 
             //var f = new FacadeData();
-            //HandShakeHelper handShakeHelper = new HandShakeHelper();
+            //HandShakeHelperSaveToFile handShakeHelper = new HandShakeHelperSaveToFile();
             //var handShake =  handShakeHelper.GetHandShakeFloor();
 
             //handShakeHelper.SaveHandShakeFloor(new Handshake(){Accelometer = 1525280770 , Promixitmity = 1525281221, CreatedDate = DateTime.Now});

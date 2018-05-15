@@ -19,8 +19,8 @@ namespace WebApi.Access.Controllers
         public IotController()
         {
   
-            _inferredDataService = new InferredDataService(new FacadeData(new HandShakeHelper(@"..\DataLayer\Settings\handshake.json")));
-            //_inferredDataService = new InferredDataService(new FacadeData(new HandShakeHelper(HttpContext.Current.Server.MapPath("../DataLayer/Settings/handshake.json"))));
+            //_inferredDataService = new InferredDataService(new FacadeData(new HandShakeHelperSaveToFile(@"..\DataLayer\Settings\handshake.json")));
+            _inferredDataService = new InferredDataService(new FacadeData(new HandShakeHelperSaveToFB()));
         }
 
         /// <summary>

@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using DataLayer.Domain;
 using Newtonsoft.Json;
 
 namespace DataLayer.Helper.HandshakeHelper
 {
-    public class HandShakeHelper : IHandShakeHelper
+    public class HandShakeHelperSaveToFile : IHandShakeHelper
     {
         private DateHelper.DateHelper _dateHelper;
         private string _handshakeFilePath;
 
-        public HandShakeHelper(string handshakeFilePath)
+        public HandShakeHelperSaveToFile(string handshakeFilePath)
         {
             _handshakeFilePath = handshakeFilePath;
             _dateHelper = new DateHelper.DateHelper();

@@ -17,7 +17,8 @@ namespace Library.Job
 
         protected MasterTemplate()
         {
-            facade = new FacadeData(new HandShakeHelper(@"..\..\..\DataLayer\Settings\handshake.json"));
+            //facade = new FacadeData(new HandShakeHelperSaveToFile(@"..\..\..\DataLayer\Settings\handshake.json"));
+            facade = new FacadeData(new HandShakeHelperSaveToFB());
             inferredMeasurements = new List<Measurement>();
         }
 
