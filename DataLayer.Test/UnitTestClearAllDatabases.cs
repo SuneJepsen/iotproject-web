@@ -18,7 +18,7 @@ namespace DataLayer.Test
             var inferredDataRepo = new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.InferredData, string.Empty));
             //rawDataRepo.DeleteAll();
             copyDataRepo.DeleteAll();
-            handshakeRepo.DeleteAll();
+            //handshakeRepo.DeleteAll();
             inferredDataRepo.DeleteAll();
         }
     }
