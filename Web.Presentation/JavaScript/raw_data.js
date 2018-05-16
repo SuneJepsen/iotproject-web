@@ -59,23 +59,38 @@ $(document).ready(function () {
     //        ]
     //    }];
 
-    var last_door = "";
-    var last_floor = "";
+    var last_time = "";
 
-    setInterval(retrieveData, 5000);
+    retrieveData();
+    setInterval(retrieveData, 2000);
 
     function retrieveData() {
-        $.ajax({ // Maybe only send timestamp and not ids (what if many devices? - not dynamic right now)
-            url: "https://webapiaccess20180420013135.azurewebsites.net//api/iot/GetCopyData?doorGuid="+last_door+"&floorGuid="+last_floor, success: function (result) {
+        $.ajax({ 
+            url: "https://webapiaccess20180420013135.azurewebsites.net//api/iot/GetCopyData?EndDate=" + last_time, success: function (result) {
                 console.log(result);
-                //last_door = ;
-                //last_floor = ;
+                console.log("https://webapiaccess20180420013135.azurewebsites.net//api/iot/GetCopyData?EndDate=" + last_time);
+                calculateLastTime(result);
                 processResult(result);
             }, error: function (err) {
                 console.log("error")
+                console.log("https://webapiaccess20180420013135.azurewebsites.net//api/iot/GetCopyData?EndDate=" + last_time);
                 console.log(err);
             }
         });
+    }
+
+    function calculateLastTime(data) {
+        end_dates = []
+        data.forEach(x => {
+            if (x.Measurements.length > 0) {
+                end_dates.push(new Date(x.Measurements[x.Measurements.length - 1].EndDate).getTime());
+            }
+        });
+        console.log(end_dates);
+        if (end_dates.length > 0) {
+            last_time = new Date(Math.max.apply(null, end_dates)).toISOString();
+        }
+        console.log(last_time);
     }
 
     var count = 0;
@@ -84,14 +99,15 @@ $(document).ready(function () {
         divs[divs.length] = divName;
         var div = document.createElement("div");
         div.setAttribute("id", divName);
-        div.setAttribute("class", "col-lg-12 col-xl-6 col-sm-12 col-xs-12");
+        div.setAttribute("class", "col-lg-12 col-xl-12 col-sm-12 col-xs-12");
         $(".row").append(div);
         init_times[noOfDevices] = { Device: divName, StartDate: init_time };
         noOfDevices++;
 
         var layout = {
             title: title,
-            height: 500,
+            height: 400,
+            width: 1600,
             xaxis: {
                 title: 'Time',
                 type: 'date',
@@ -154,23 +170,15 @@ $(document).ready(function () {
 
     var processResult = function (data) {
         data.forEach(x => {
-            if (divs.find(y => { x.Type == y }) == undefined) {
-                var title = x.Title + " (" + x.Type + ")";
-                createGraph(x.Type, title, x.Measurements[0].StartDate);
+            if (x.Measurements.length > 0) {
+                if (divs.find(y => x.Type == y) == undefined) {
+                    var title = "Sensor " + x.Title + " (" + "Device ID: " + x.Type + ")";
+                    createGraph(x.Type, title, x.Measurements[0].StartDate);
+                }
+                // Show last 10 minutes
+                updateGraph(x.Measurements, x.Type, 600000);
             }
-            updateGraph(x.Measurements, x.Type, 10000);
         });
     }
-
-    //processResult(rawData);
-
-    //createGraph('myDiv', init_time);
-    //createGraph('myDiv2', init_time);
-    //createGraph('myDiv3', init_time);
-
-    //setTimeout(function () {updateGraph(rawData, 'myDiv', 10000); }, 1000);
-    //setTimeout(function () { processResult(rawData); }, 1000);
-    //setTimeout(function () { processResult(rawData3); }, 2000);
-    //setTimeout(function () { updateGraph(updatedinferred2, 'myDiv3', 10000); }, 3000);
 
 });

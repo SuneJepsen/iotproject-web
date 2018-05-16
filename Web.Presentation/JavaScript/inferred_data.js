@@ -40,32 +40,29 @@ $(document).ready(function () {
     //];
 
     var divName = "count-graph";
+    var pieDivName = divName + "_pie";
+    var pieLayout = {};
     var count = 0;
     var init_time = 0;
-    var interval = 10000;
+    var interval = 600000;
     var last_id = "";
+    var maxOccupied = 100;
 
-    $.ajax({
-        url: "http://webapiaccess20180420013135.azurewebsites.net/api/iot/GetInferredData?guid=", success: function (result) {
-            console.log(result);
-            init_time = result.Measurements[0].StartDate;
-            last_time = result.Measurements[result.Measurements.length - 1].Id;
-            initGraph(init_time);
-            updateGraph(results.Measurements);
-        }, error: function (err) {
-            console.log("error");
-            console.log(err);
-        }
-    });
-
+    retrieveData();
     setInterval(retrieveData, 5000);
 
     function retrieveData() {
         $.ajax({
-            url: "http://webapiaccess20180420013135.azurewebsites.net/api/iot/GetInferredData?guid="+Id, success: function (result) {
+            url: "http://webapiaccess20180420013135.azurewebsites.net/api/iot/GetInferredData?guid=" + last_id, success: function (result) {
                 console.log(result);
-                last_time = result.Measurements[result.Measurements.length - 1].Id;
-                updateGraph(result.Measurements);
+                if (result.Measurements.length > 0) {
+                    if (init_time == 0) {
+                        init_time = result.Measurements[0].StartDate;
+                        initGraph(init_time);
+                    }
+                    last_id = result.Measurements[result.Measurements.length - 1].Id;
+                    updateGraph(result.Measurements);
+                }
             }, error: function (err) {
                 console.log("error");
                 console.log(err);
@@ -77,7 +74,8 @@ $(document).ready(function () {
 
         var layout = {
             title: "Frequency Flow",
-            height: 800,
+            height: 600,
+            width: 1300,
             xaxis: {
                 title: "Time",
                 type: 'date',
@@ -97,16 +95,28 @@ $(document).ready(function () {
             }
         ];
         Plotly.plot(divName, data, layout);
+
+        var pieData = [{
+            values: [100, 0],
+            labels: ['Free', 'Occupied'],
+            type: 'pie'
+        }];
+
+        pieLayout = {
+            title: "Usage",
+            autosize: false,
+            width: 500,
+            height: 500,
+        };
+
+        Plotly.newPlot(divName + "_pie", pieData, pieLayout);
     }
 
     var updateGraph = function (data) {
         var end_time = data[data.length - 1].StartDate;
         var start_time = end_time - interval;
 
-        var update = {
-            x: [data.map(x => x.StartDate)],
-            y: [data.map(x => count += parseInt(x.Count))]
-        }
+        var update = reshapeArray(data);
 
         var minuteView = {
             xaxis: {
@@ -118,10 +128,34 @@ $(document).ready(function () {
 
         Plotly.relayout(divName, minuteView);
         Plotly.extendTraces(divName, update, [0])
+
+        var occupation = (count * 100 / maxOccupied);
+        if (occupation > 100) {
+            occupation = 100;
+        }
+
+        var pieData = [{
+            values: [100 - occupation, occupation],
+            labels: ['Free', 'Occupied'],
+            type: 'pie'
+        }];
+
+        Plotly.react(divName + "_pie", pieData, pieLayout);
     };
 
-    //setTimeout(function () { updateGraph(inferredData); }, 1000);
-    //setTimeout(function () { updateGraph(inferredData2); }, 2000);
-    //setTimeout(function () { updateGraph(inferredData3); }, 3000);
+    var reshapeArray = function (array) {
+        var time = [];
+        var binValue = [];
+        var index = 0;
+        array.forEach(el => {
+            time[index] = el.EndDate;
+            binValue[index++] = count;
+
+            time[index] = el.EndDate;
+            binValue[index++] = count += parseInt(el.Count);
+        });
+
+        return { x: [time], y: [binValue] };
+    }
 
 });
