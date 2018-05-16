@@ -40,7 +40,7 @@ namespace Library.Job
         private void End()
         {
             facade.SaveCopyMeasurements(allRawMeasurements);
-            //facade.DeleteRawDataFloor();
+            facade.DeleteRawData();
             facade.SaveInferredMeasurements(inferredMeasurements);
         }
  

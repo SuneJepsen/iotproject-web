@@ -157,5 +157,11 @@ namespace DataLayer.Facade
         {
             return inferredDataRepo.GetAll();
         }
+
+        public void DeleteRawData()
+        {
+            rawDataRepo = new FirebaseRawMeasurement<MeasurementRaw>(string.Format(FirebaseConnectionString.RawData, string.Empty, string.Empty));
+            rawDataRepo.DeleteAll();
+        }
     }
 }
