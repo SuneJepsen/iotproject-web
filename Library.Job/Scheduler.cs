@@ -8,7 +8,8 @@ namespace Library.Job
     {
         public override void ModelData()
         {
-            ITask doInferenceBetweenDoorAndFloorData = new InferenceLogicNaive(floorMeasurements, doorMeasurements);
+            //ITask doInferenceBetweenDoorAndFloorData = new InferenceLogicNaive(floorMeasurements, doorMeasurements);
+            ITask doInferenceBetweenDoorAndFloorData = new InferenceLogicExperimented(floorMeasurements, doorMeasurements);
             doInferenceBetweenDoorAndFloorData.Work();
             inferredMeasurements = doInferenceBetweenDoorAndFloorData.Done();
 

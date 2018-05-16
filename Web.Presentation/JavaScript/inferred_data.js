@@ -44,12 +44,13 @@ $(document).ready(function () {
     var pieLayout = {};
     var count = 0;
     var init_time = 0;
-    var interval = 600000;
+    var interval = 8000000;
     var last_id = "";
     var maxOccupied = 100;
+    var start_time = new Date(2018, 4, 16, 19, 39);
 
     retrieveData();
-    setInterval(retrieveData, 5000);
+    setInterval(retrieveData, 2000);
 
     function retrieveData() {
         $.ajax({
@@ -75,7 +76,7 @@ $(document).ready(function () {
         var layout = {
             title: "Frequency Flow",
             height: 600,
-            width: 1300,
+            width: 900,
             xaxis: {
                 title: "Time",
                 type: 'date',
@@ -105,17 +106,17 @@ $(document).ready(function () {
         pieLayout = {
             title: "Usage",
             autosize: false,
-            width: 500,
-            height: 500,
+            width: 300,
+            height: 300,
         };
 
         Plotly.newPlot(divName + "_pie", pieData, pieLayout);
     }
 
     var updateGraph = function (data) {
-        var end_time = data[data.length - 1].StartDate;
-        var start_time = end_time - interval;
-
+        var end_time = data[data.length - 1].EndDate;
+        //var start_time = end_time - interval;
+        console.log("end " +end_time);
         var update = reshapeArray(data);
 
         var minuteView = {

@@ -69,7 +69,7 @@ namespace DataLayer.Facade
                     {
                         Id = candidateForHandshake.Type,
                         Epoch = candidateForHandshake.Time,
-                        EpochToDatetime = _dateHelper.ConvertFromEpoch(candidateForHandshake.Time),
+                        EpochToDatetime = _dateHelper.ConvertFromEpoch(candidateForHandshake.Time).AddSeconds(-2),
                         CreatedDate = DateTime.Now
                     };
                     _handShakeHelper.SaveHandshake(handshake);

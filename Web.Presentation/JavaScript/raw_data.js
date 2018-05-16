@@ -107,7 +107,7 @@ $(document).ready(function () {
         var layout = {
             title: title,
             height: 400,
-            width: 1600,
+            width: 900,
             xaxis: {
                 title: 'Time',
                 type: 'date',
