@@ -108,8 +108,22 @@ namespace DataLayer.Facade
 
                     if (measurementsToSave.Any())
                     {
-                        var copyDataRepoConcrete =new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.CopyData,sensor.Type));
+                        var copyDataRepoConcrete =new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.CopyData, sensor.Type));
                         copyDataRepoConcrete.Save(measurementsToSave);
+                    }
+                    else
+                    {
+                        List<Measurement> filteredMeasurements = measurements.GroupBy(x => x.Type).Select(group => group.First()).ToList();
+                        foreach (var d in filteredMeasurements)
+                        {
+                            var measurementsToSave2 = measurements.Where(x => x.Type == d.Type).ToList();
+
+                            if (measurementsToSave2.Any())
+                            {
+                                var copyDataRepoConcrete = new FirebaseDb<Measurement>(string.Format(FirebaseConnectionString.CopyData, d.Type));
+                                copyDataRepoConcrete.Save(measurementsToSave2);
+                            }
+                        }
                     }
                 }
             }
@@ -156,6 +170,12 @@ namespace DataLayer.Facade
         public List<Measurement> GetAllInferredData()
         {
             return inferredDataRepo.GetAll();
+        }
+
+        public void DeleteRawData()
+        {
+            rawDataRepo = new FirebaseRawMeasurement<MeasurementRaw>(string.Format(FirebaseConnectionString.RawData, string.Empty, string.Empty));
+            rawDataRepo.DeleteAll();
         }
     }
 }

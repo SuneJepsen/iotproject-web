@@ -14,6 +14,8 @@ namespace DataLayer.Facade
         List<Measurement> GetAllCopyData();
         void SaveInferredMeasurements(List<Measurement> measurements);
         List<Measurement> GetAllInferredData();
+
+        void DeleteRawData();
         //List<Measurement> GetAllRawDataFloorAsMeasurement();
         //List<Measurement> GetAllRawDataDoorAsMeasurement();
         //void SaveCopyFloorMeasurements(List<Measurement> measurements);
