@@ -27,12 +27,14 @@ namespace Library.Job
             floorMeasurements = allRawMeasurements.Where(x => x.Title == "PRX").ToList();
         }
 
-        public abstract void ModelData();
+        public abstract void ModelData1();
+        public abstract void ModelData2();
+        public abstract void ModelData3();
 
         public void Run()
         {
             Initialize();
-            ModelData();
+            ModelData1();
             End();
         }
 

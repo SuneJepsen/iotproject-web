@@ -13,10 +13,10 @@ namespace WebApi.Access.Controllers
 {
 
     // https://webapiaccess20180420013135.azurewebsites.net/api/iot
-    public class IotController : ApiController
+    public class SensorController : ApiController
     {
         private InferredDataService _inferredDataService;
-        public IotController()
+        public SensorController()
         {
   
             //_inferredDataService = new InferredDataService(new FacadeData(new HandShakeHelperSaveToFile(@"..\DataLayer\Settings\handshake.json")));
@@ -30,7 +30,7 @@ namespace WebApi.Access.Controllers
         /// <param name="guid"></param>
         /// <returns></returns>
         [HttpGet]
-        public DeviceData GetInferredData(Guid? guid)
+        public DeviceData InferredData(Guid? guid)
         {
 
             return _inferredDataService.GetInferredDataForCurrentDay(guid);
@@ -43,7 +43,7 @@ namespace WebApi.Access.Controllers
         /// <param name="endDate"></param>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<DeviceData> GetCopyData(DateTime? endDate)
+        public IEnumerable<DeviceData> CopyData(DateTime? endDate)
         {
             return _inferredDataService.GetCopyDataForCurrentDay(endDate);
         }

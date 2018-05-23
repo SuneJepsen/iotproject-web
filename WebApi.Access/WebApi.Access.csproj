@@ -177,7 +177,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\IotController.cs" />
+    <Compile Include="Controllers\SensorController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Domain\DeviceData.cs" />
     <Compile Include="Global.asax.cs">

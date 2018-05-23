@@ -6,7 +6,7 @@ namespace Library.Job
 {
     public class Scheduler:MasterTemplate
     {
-        public override void ModelData()
+        public override void ModelData1()
         {
             //ITask doInferenceBetweenDoorAndFloorData = new InferenceLogicNaive(floorMeasurements, doorMeasurements);
             ITask doInferenceBetweenDoorAndFloorData = new InferenceLogicExperimented(floorMeasurements, doorMeasurements);
@@ -16,6 +16,16 @@ namespace Library.Job
             ITask cryptoSensitiveData = new CryptoSensitiveData(inferredMeasurements, new RijndaelManaged());
             cryptoSensitiveData.Work();
             inferredMeasurements = cryptoSensitiveData.Done();
+        }
+
+        public override void ModelData2()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void ModelData3()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
